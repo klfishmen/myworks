@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 徹底解決 LINE 內建瀏覽器強烈 Cache 快取問題 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <title>基隆鮮物．崁仔頂小商人 khàm-tíng</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes bump {
+      0% { transform: scale(1); color: #b91c1c; }
+      50% { transform: scale(1.3); color: #ea580c; }
+      100% { transform: scale(1); color: #b91c1c; }
+    }
+    .stock-bump { animation: bump 0.5s ease-in-out; }
+  </style>
+</head>
+<body class="bg-amber-50/60 text-stone-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- 頂部沙盒測試工具列 -->
+  <div class="bg-stone-900 text-amber-200 text-xs py-2 px-4 flex flex-wrap justify-between items-center z-50 sticky top-0 shadow-md gap-2">
+    <div class="flex items-center space-x-2">
+      <span class="bg-amber-600 text-white px-2 py-0.5 rounded font-bold">本地沙盒測試模式</span>
+      <span id="current-user-badge">目前身分：一般顧客 (未登入)</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <button onclick="app.switchRole('customer')" class="bg-stone-700 hover:bg-stone-600 text-white px-2.5 py-1 rounded cursor-pointer transition">切換為一般顧客</button>
+      <button onclick="app.switchRole('admin')" class="bg-amber-700 hover:bg-amber-600 text-white px-2.5 py-1 rounded cursor-pointer transition font-bold">切換為管理者 (twvisa2009@gmail.com)</button>
+      <button onclick="app.toggleSaleSwitch()" id="sale-switch-btn" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1 rounded cursor-pointer transition font-bold">搶購狀態：開放中 (點擊切換為12:00等待中)</button>
+    </div>
+  </div>
+
+  <!-- 頂部導覽列 -->
+  <header class="bg-amber-900 text-amber-50 sticky top-[37px] z-40 shadow-lg border-b border-amber-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#home" onclick="app.switchTab('home')" class="flex items-center space-x-3 group cursor-pointer">
+        <div class="w-10 h-10 bg-rose-600 rounded-full flex items-center justify-center shadow-inner group-hover:scale-105 transition">
+          <i class="fa-solid fa-fish text-white text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-black tracking-wider text-amber-100 group-hover:text-white transition">基隆鮮物．崁仔頂小商人</h1>
+          <p class="text-[10px] text-amber-300 tracking-widest">khàm-tíng • 深夜現流直送</p>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <a href="#home" onclick="app.switchTab('home')" class="hover:text-amber-300 transition">首頁</a>
+        <a href="#guide" onclick="app.switchTab('guide')" class="hover:text-amber-300 transition">導覽預約</a>
+        <a href="#flash" onclick="app.switchTab('flash')" class="hover:text-amber-300 transition">現流搶購</a>
+        <a href="#frozen" onclick="app.switchTab('frozen')" class="hover:text-amber-300 transition">冷凍常規</a>
+        <a href="#video" onclick="app.switchTab('video')" class="hover:text-amber-300 transition">崁仔頂實況</a>
+        <a href="#board" onclick="app.checkAuthAndSwitch('board')" class="hover:text-amber-300 transition">留言板</a>
+        <a href="#qa" onclick="app.switchTab('qa')" class="hover:text-amber-300 transition">QA</a>
+        <button id="admin-nav-btn" onclick="app.openAdminModal()" class="hidden bg-rose-600 text-white px-3 py-1.5 rounded-lg shadow hover:bg-rose-500 transition font-bold text-xs"><i class="fa-solid fa-gears mr-1"></i>後台管理</button>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="app.toggleCartDrawer()" class="relative bg-amber-800 hover:bg-amber-700 px-3 py-2 rounded-xl text-amber-100 flex items-center space-x-2 transition shadow">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="text-xs font-bold hidden sm:inline">購物車</span>
+          <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+        </button>
+        <button id="auth-btn" onclick="app.openAuthModal()" class="bg-amber-100 text-amber-900 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-white transition shadow">
+          <i class="fa-brands fa-google mr-1"></i>Google 登入
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主頁面容器 -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div id="tab-home" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- 左側 2/3：現流 + 影音 + QA -->
+      <div class="lg:col-span-2 space-y-8 order-1">
+        <div class="bg-gradient-to-r from-amber-700 to-amber-800 text-amber-50 p-6 rounded-2xl shadow-lg border border-amber-600">
+          <div class="flex items-center space-x-3 mb-2">
+            <span id="sale-status-tag" class="bg-rose-600 text-white text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wider animate-pulse">每日 12:00 準時解鎖</span>
+            <span class="text-xs text-amber-200">每週出貨週期：週二 12:00 至週日 12:00</span>
+          </div>
+          <h2 class="text-2xl font-black mb-1">崁仔頂現流野生海鮮・限量搶購</h2>
+          <p class="text-sm text-amber-100 opacity-90">深夜親自走訪基隆崁仔頂魚市場，嚴選當季最新鮮野生漁獲。</p>
+        </div>
+
+        <div class="space-y-4">
+          <div id="flash-sales-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- 影音實況 -->
+        <div id="video-section" class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200">
+          <h3 class="text-lg font-bold text-stone-900 border-l-4 border-amber-700 pl-3 mb-4">📺 崁仔頂實況與開箱影音</h3>
+          <div class="aspect-w-16 aspect-h-9 bg-stone-900 rounded-xl overflow-hidden relative">
+            <iframe class="w-full h-64 sm:h-80 object-cover" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="崁仔頂現場叫賣實況" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- QA 問答區 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200 space-y-4">
+          <h3 class="text-lg font-bold text-stone-900 border-l-4 border-amber-700 pl-3">⚓ 常見問答 Q&A</h3>
+          <div id="qa-list" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- 右側 1/3：冷凍常規專區 -->
+      <div class="lg:col-span-1 space-y-4 bg-amber-100/50 p-4 rounded-2xl border border-amber-200 h-fit sticky top-28 order-2 lg:order-2">
+        <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+          <h3 class="text-base font-black text-amber-900"><i class="fa-solid fa-snowflake text-amber-700 mr-2"></i>冷凍常規嚴選專區</h3>
+          <span class="text-xs bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold">常態供應</span>
+        </div>
+        <div id="frozen-products-container" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- 其他 Tab 保持靜態構造 ... -->
+    <div id="tab-guide" class="tab-content hidden max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-amber-200 space-y-6">
+      <div class="border-b pb-4">
+        <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded font-bold">在地文化導覽</span>
+        <h2 class="text-2xl font-black text-stone-900 mt-2">崁仔頂魚市場與旭川河文化走讀</h2>
+      </div>
+      <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 text-sm font-bold text-rose-900 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-info text-rose-600 text-lg"></i>
+        <span>如有崁仔頂導覽服務，請到留言區私訊板主。</span>
+      </div>
+    </div>
+
+    <div id="tab-flash" class="tab-content hidden space-y-6"><div id="flash-sales-tab-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div></div>
+    <div id="tab-frozen" class="tab-content hidden space-y-6"><div id="frozen-tab-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div></div>
+    <div id="tab-video" class="tab-content hidden max-w-4xl mx-auto space-y-6"><div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200"><iframe class="w-full h-96 object-cover rounded-xl" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe></div></div>
+    
+    <div id="tab-board" class="tab-content hidden max-w-4xl mx-auto space-y-6">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200">
+        <div class="flex border-b pb-4 mb-6">
+          <button onclick="app.switchBoardTab('public')" id="btn-board-public" class="flex-1 pb-2 font-bold text-amber-900 border-b-2 border-amber-700">💬 公開留言板</button>
+          <button onclick="app.switchBoardTab('private')" id="btn-board-private" class="flex-1 pb-2 font-bold text-stone-500">🔒 私人私訊專區</button>
+        </div>
+        <div id="board-public-section" class="space-y-4">
+          <div id="public-messages-list" class="space-y-3 max-h-96 overflow-y-auto p-4 bg-stone-50 rounded-xl border"></div>
+          <div class="flex space-x-2">
+            <input type="text" id="public-msg-input" placeholder="留下一句話..." class="flex-1 border rounded-xl px-4 py-2 text-sm">
+            <button onclick="app.sendPublicMessage()" class="bg-amber-900 text-white px-6 py-2 rounded-xl text-sm font-bold">發布</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-qa" class="tab-content hidden max-w-4xl mx-auto space-y-6">
+      <div id="qa-tab-list" class="space-y-3 bg-white p-6 rounded-2xl shadow-sm border border-amber-200"></div>
+    </div>
+  </main>
+
+  <!-- 📱 手機版與電腦版：新人指南彈出式 Modal -->
+  <div id="guide-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="absolute inset-0 bg-black/75 backdrop-blur-xs" onclick="app.closeGuideModal()"></div>
+    <div class="bg-white rounded-2xl p-4 sm:p-5 max-w-lg w-full max-h-[85vh] flex flex-col relative z-10 shadow-2xl border border-amber-200 overflow-hidden">
+      <div class="flex justify-between items-center border-b border-amber-100 pb-2.5 mb-3 shrink-0">
+        <div class="flex items-center space-x-2">
+          <span class="bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-md font-bold">📢 新人必看</span>
+          <h3 class="text-sm sm:text-base font-black text-stone-900">小商人海鮮・入群指南與出貨規則</h3>
+        </div>
+        <button onclick="app.closeGuideModal()" class="text-stone-400 hover:text-stone-600 text-2xl font-bold p-1 leading-none">&times;</button>
+      </div>
+      <div class="flex-1 overflow-y-auto rounded-xl bg-stone-50 border border-stone-100 p-1 mb-3">
+        <img src="images/guide-banner.png" alt="小商人海鮮新人指南" class="w-full h-auto object-contain rounded-lg">
+      </div>
+      <!-- 手機端大拇指黃金操作區 -->
+      <div class="flex flex-col sm:flex-row justify-between items-center border-t border-amber-100 pt-3 gap-2 shrink-0">
+        <span class="text-[10px] text-stone-400 order-2 sm:order-1">點擊任意處即可關閉</span>
+        <button onclick="app.closeGuideModal()" class="w-full sm:w-auto bg-amber-900 hover:bg-amber-800 text-white font-bold px-6 py-3 rounded-xl text-xs sm:text-sm transition shadow-md cursor-pointer active:scale-95 order-1 sm:order-2">
+          我知道了，開始逛海鮮！
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔐 一鍵 Google 授權 / 快速登入 Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-xs" onclick="app.closeAuthModal()"></div>
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full relative z-10 shadow-2xl text-center space-y-4">
+      <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-800 text-2xl font-bold">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <h3 class="text-lg font-black text-stone-900">完成下單核銷確認</h3>
+      <p class="text-xs text-stone-500">登入一次後，系統將自動記住您的身分，下次從 LINE 點開直接快速下單！</p>
+      
+      <button onclick="app.performGoogleAuth()" class="w-full bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 font-bold py-3 px-4 rounded-xl shadow-sm flex items-center justify-center space-x-2 transition cursor-pointer">
+        <i class="fa-brands fa-google text-rose-600 text-lg"></i>
+        <span class="text-xs">使用 Google 帳號一鍵快速登入</span>
+      </button>
+      
+      <button onclick="app.closeAuthModal()" class="text-xs text-stone-400 underline">暫時取消，繼續逛網頁</button>
+    </div>
+  </div>
+
+  <!-- 後台 Modal -->
+  <div id="admin-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-xs" onclick="app.closeAdminModal()"></div>
+    <div class="bg-white rounded-2xl p-6 max-w-5xl w-full mx-4 max-h-[90vh] flex flex-col relative z-10 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-4 mb-4">
+        <div>
+          <span class="bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">管理者專屬</span>
+          <h3 class="text-xl font-black text-stone-900">twvisa2009@gmail.com 後台管理系統</h3>
+        </div>
+        <button onclick="app.closeAdminModal()" class="text-stone-400 hover:text-stone-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <div class="flex space-x-2 border-b mb-4 overflow-x-auto pb-2">
+        <button onclick="app.switchAdminPane('orders')" id="adm-tab-orders" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-900 text-white transition">訂單與對帳核銷</button>
+        <button onclick="app.switchAdminPane('flash')" id="adm-tab-flash" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition">現流商品上架與庫存</button>
+        <button onclick="app.switchAdminPane('frozen')" id="adm-tab-frozen" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition">常態冷凍商品管理</button>
+        <button onclick="app.switchAdminPane('stats')" id="adm-tab-stats" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition">財務損益與統計報表</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto pr-1">
+        <div id="adm-pane-orders" class="space-y-4"><div id="admin-orders-list" class="space-y-3"></div></div>
+        <div id="adm-pane-flash" class="space-y-4 hidden">
+          <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200 space-y-3">
+            <h4 class="font-bold text-xs text-amber-900">➕ 快速上架新現流海鮮</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <input type="text" id="add-flash-name" placeholder="商品名稱" class="border rounded px-2 py-1.5 text-xs bg-white">
+              <input type="number" id="add-flash-price" placeholder="售價 (NT$)" class="border rounded px-2 py-1.5 text-xs bg-white">
+              <input type="number" id="add-flash-cost" placeholder="進貨成本 (NT$)" class="border rounded px-2 py-1.5 text-xs bg-white">
+              <input type="number" id="add-flash-stock" placeholder="庫存數量 (份)" class="border rounded px-2 py-1.5 text-xs bg-white">
+              <select id="add-flash-media-type" class="border rounded px-2 py-1.5 text-xs bg-white font-bold">
+                <option value="image">一般商品圖片</option>
+                <option value="video">直式 9:16 短影音 (.mp4 / YT)</option>
+              </select>
+              <input type="text" id="add-flash-media-url" placeholder="圖片或影片 URL / images/xxx.mp4" class="border rounded px-2 py-1.5 text-xs bg-white sm:col-span-3">
+            </div>
+            <button onclick="app.addFlashItem()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">確認上架現流商品</button>
+          </div>
+          <div id="admin-flash-list" class="space-y-2"></div>
+        </div>
+        <div id="adm-pane-frozen" class="space-y-4 hidden"><div id="admin-frozen-list" class="space-y-2"></div></div>
+        <div id="adm-pane-stats" class="space-y-4 hidden">
+          <div id="stats-summary-cards" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 購物車 Drawer -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-xs" onclick="app.toggleCartDrawer()"></div>
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between p-6">
+        <div>
+          <div class="flex items-center justify-between border-b pb-4">
+            <h2 class="text-lg font-black text-stone-900"><i class="fa-solid fa-cart-shopping mr-2 text-amber-800"></i>您的購物車</h2>
+            <button onclick="app.toggleCartDrawer()" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+          </div>
+          <div id="cart-items-list" class="divide-y divide-stone-100 max-h-96 overflow-y-auto my-4 space-y-3"></div>
+        </div>
+        <div class="border-t pt-4 space-y-3">
+          <div class="flex justify-between text-sm"><span class="text-stone-600">商品總計：</span><span id="cart-subtotal" class="font-bold text-stone-950">$0</span></div>
+          <div class="flex justify-between text-sm"><span class="text-stone-600">運費規則：</span><span id="cart-shipping" class="font-bold text-amber-800">$130</span></div>
+          <div class="flex justify-between text-base font-black border-t pt-2"><span>應付金額：</span><span id="cart-total" class="text-rose-600">$130</span></div>
+          <button onclick="app.checkoutOrder()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl transition text-sm">確認下單並取得對帳資訊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-stone-900 text-amber-100 mt-12 py-10 border-t border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-stone-400">
+      <p>&copy; 2026 基隆鮮物．崁仔頂小商人 khàm-tíng. 保留所有權利。</p>
+    </div>
+  </footer>
+
+  <!-- 核心邏輯 -->
+  <script>
+    class SeafoodLocalApp {
+      constructor() {
+        this.currentUser = null;
+        this.cart = [];
+        this.isSaleOpen = true;
+
+        this.flashSales = [
+          { id: 'f1', name: '野生現流紅甘 (去鱗去內臟)', price: 450, cost: 280, weight: '200g±10%', origin: '基隆外海', remaining: 4, mediaType: 'video', mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-fresh-fish-on-ice-at-a-market-42838-large.mp4', desc: '肉質緊實清甜，適合清蒸或煮湯' },
+          { id: 'f2', name: '船凍野生透抽 (整尾鮮甜)', price: 380, cost: 220, weight: '200g±10%', origin: '北方三島', remaining: 3, mediaType: 'image', mediaUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80', desc: '急速冷凍鎖住鮮甜，川燙最對味' }
+        ];
+
+        this.frozenProducts = [
+          { id: 'fr1', name: '深海大白鯧 (真空冷凍)', price: 680, cost: 420, weight: '300g±10%', img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80', desc: '過年過節與家常宴客必備' }
+        ];
+
+        this.orders = [
+          { id: 'KT-202610-01', userEmail: 'customer@test.com', phone: '4005', store711: '仁愛門市', storeFamily: '基隆港門市', items: [{ name: '野生現流紅甘', qty: 2, price: 450, cost: 280 }], total: 900, status: 'verified', createdAt: '2026-10-31' }
+        ];
+
+        this.qaData = [
+          { q: "Q1：請問需要登入才能買魚嗎？", a: "不需要！您可以先挑選海鮮加入購物車，結帳時再登入即可。登入一次後系統會自動記住您！" },
+          { q: "Q2：每日現流海鮮是什麼時候開賣？", a: "固定於每日中午 12:00 準時解鎖開賣，各品項庫存獨立計算！" }
+        ];
+
+        this.init();
+      }
+
+      init() {
+        this.loadSavedUserSession(); // 載入儲存的登入狀態
+        this.renderFlashSales();
+        this.renderFrozenProducts();
+        this.renderQA();
+        this.checkFirstVisitGuide(); // 檢查新人指南
+      }
+
+      // 🔐 一次登入，永久記憶身分
+      loadSavedUserSession() {
+        const savedUser = localStorage.getItem('seafood_user_session');
+        if (savedUser) {
+          try {
+            this.currentUser = JSON.parse(savedUser);
+            this.updateUserUI();
+          } catch(e) {
+            localStorage.removeItem('seafood_user_session');
+          }
+        }
+      }
+
+      updateUserUI() {
+        const badge = document.getElementById('current-user-badge');
+        const authBtn = document.getElementById('auth-btn');
+        const adminNavBtn = document.getElementById('admin-nav-btn');
+
+        if (this.currentUser) {
+          badge.innerText = `目前身分：${this.currentUser.name} (${this.currentUser.email})`;
+          authBtn.innerHTML = `<i class="fa-solid fa-user-check mr-1"></i>${this.currentUser.name}`;
+          authBtn.className = "bg-emerald-100 text-emerald-900 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow";
+          
+          if (this.currentUser.role === 'admin') {
+            adminNavBtn.classList.remove('hidden');
+          } else {
+            adminNavBtn.classList.add('hidden');
+          }
+        } else {
+          badge.innerText = '目前身分：一般顧客 (未登入)';
+          authBtn.innerHTML = `<i class="fa-brands fa-google mr-1"></i>Google 登入`;
+          authBtn.className = "bg-amber-100 text-amber-900 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-white transition shadow";
+          adminNavBtn.classList.add('hidden');
+        }
+      }
+
+      switchRole(role) {
+        if (role === 'admin') {
+          this.currentUser = { email: 'twvisa2009@gmail.com', name: '小商人管理者', role: 'admin' };
+        } else {
+          this.currentUser = { email: 'customer@test.com', name: '測試買家', role: 'customer' };
+        }
+        localStorage.setItem('seafood_user_session', JSON.stringify(this.currentUser));
+        this.updateUserUI();
+      }
+
+      openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+      closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+
+      performGoogleAuth() {
+        this.currentUser = { email: 'customer@test.com', name: '顧客', role: 'customer' };
+        localStorage.setItem('seafood_user_session', JSON.stringify(this.currentUser));
+        this.updateUserUI();
+        this.closeAuthModal();
+        alert('登入成功！系統已記錄您的身分，下次開啟網頁將自動登入。');
+        
+        // 若購物車有東西，登入後直接觸發結帳
+        if (this.cart.length > 0) {
+          this.checkoutOrder();
+        }
+      }
+
+      checkFirstVisitGuide() {
+        const hasSeen = localStorage.getItem('hasSeenGuide');
+        if (!hasSeen) {
+          document.getElementById('guide-modal').classList.remove('hidden');
+        }
+      }
+
+      closeGuideModal() {
+        document.getElementById('guide-modal').classList.add('hidden');
+        localStorage.setItem('hasSeenGuide', 'true');
+      }
+
+      renderFlashSales() {
+        const container = document.getElementById('flash-sales-container');
+        if (!container) return;
+
+        let html = `
+          <div class="col-span-1 md:col-span-2 mb-2 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-stone-900 border-l-4 border-rose-600 pl-3">🔥 每日現流限量搶購區</h3>
+          </div>
+        `;
+
+        this.flashSales.forEach(item => {
+          const isSoldOut = item.remaining <= 0;
+          const maxSelect = Math.min(10, item.remaining);
+
+          let mediaHtml = item.mediaType === 'video'
+            ? `<video src="${item.mediaUrl}" autoplay loop muted playsinline class="w-full h-full object-cover"></video>`
+            : `<img src="${item.mediaUrl}" class="w-full h-full object-cover">`;
+
+          html += `
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-amber-200 flex flex-col justify-between">
+              <div>
+                <div class="relative h-44 rounded-xl overflow-hidden mb-3 bg-stone-100">${mediaHtml}</div>
+                <h4 class="font-bold text-stone-900 text-sm mb-1">${item.name}</h4>
+                <p class="text-xs text-stone-500 mb-2">${item.desc}</p>
+                <div class="flex justify-between items-center mb-3 text-xs">
+                  <span class="text-rose-600 font-bold">NT$ ${item.price}</span>
+                  <span class="font-bold text-amber-900">剩餘: <span id="stock-num-${item.id}" class="text-sm font-black text-rose-600">${item.remaining}</span> 份</span>
+                </div>
+              </div>
+              <div class="space-y-2 border-t pt-3">
+                ${!this.isSaleOpen ? `
+                  <div class="w-full bg-amber-100 text-amber-800 text-center py-2 rounded-xl text-xs font-bold">中午 12:00 準時開賣</div>
+                ` : isSoldOut ? `
+                  <div class="w-full bg-stone-200 text-stone-500 text-center py-2 rounded-xl text-xs font-bold">今日已完售</div>
+                ` : `
+                  <div class="flex items-center space-x-2">
+                    <select id="flash-qty-${item.id}" class="border rounded-xl px-2 py-1.5 text-xs bg-stone-50 font-bold">
+                      ${this.generateQtyOptions(maxSelect)}
+                    </select>
+                    <button id="btn-flash-${item.id}" onclick="app.orderFlashItem('${item.id}')" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-bold transition shadow active:scale-95">
+                      加入購物車
+                    </button>
+                  </div>
+                `}
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      generateQtyOptions(max) {
+        let opts = '';
+        for (let i = 1; i <= max; i++) opts += `<option value="${i}">+${i} 份</option>`;
+        return opts;
+      }
+
+      // 免登入直接加購物車 + 防重複連點
+      orderFlashItem(id) {
+        const btn = document.getElementById(`btn-flash-${id}`);
+        if (btn) { btn.disabled = true; btn.innerText = '處理中...'; }
+
+        const item = this.flashSales.find(f => f.id === id);
+        if (!item) return;
+        const qty = parseInt(document.getElementById(`flash-qty-${id}`).value);
+
+        item.remaining -= qty;
+        this.addToCart({ id: item.id, name: item.name, price: item.price, cost: item.cost, qty: qty, type: 'flash' });
+        this.renderFlashSales();
+        alert(`已成功將【${item.name} x ${qty} 份】加入購物車！`);
+      }
+
+      renderFrozenProducts() {
+        const container = document.getElementById('frozen-products-container');
+        if (!container) return;
+
+        let html = '';
+        this.frozenProducts.forEach(item => {
+          html += `
+            <div class="bg-white rounded-2xl p-3 shadow-xs border border-amber-200 flex flex-col justify-between">
+              <div>
+                <img src="${item.img}" class="w-full h-24 object-cover rounded-lg mb-2">
+                <h4 class="font-bold text-stone-900 text-xs mb-1">${item.name}</h4>
+              </div>
+              <div class="flex justify-between items-center text-xs pt-2 border-t mt-2">
+                <span class="text-rose-600 font-bold">NT$ ${item.price}</span>
+                <div class="flex space-x-1">
+                  <select id="frozen-qty-${item.id}" class="border rounded text-[11px] font-bold">
+                    <option value="1">+1</option><option value="2">+2</option><option value="3">+3</option>
+                  </select>
+                  <button onclick="app.orderFrozenItem('${item.id}')" class="bg-amber-800 text-white px-2 py-1 rounded text-[10px] font-bold">加入</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      orderFrozenItem(id) {
+        const item = this.frozenProducts.find(f => f.id === id);
+        const qty = parseInt(document.getElementById(`frozen-qty-${id}`).value);
+        this.addToCart({ id: item.id, name: item.name, price: item.price, cost: item.cost, qty: qty, type: 'frozen' });
+        alert(`已成功將【${item.name} x ${qty} 份】加入購物車！`);
+      }
+
+      addToCart(newItem) {
+        const existing = this.cart.find(i => i.id === newItem.id);
+        if (existing) existing.qty += newItem.qty;
+        else this.cart.push(newItem);
+        document.getElementById('cart-count').innerText = this.cart.reduce((sum, i) => sum + i.qty, 0);
+      }
+
+      toggleCartDrawer() {
+        document.getElementById('cart-drawer').classList.toggle('hidden');
+        this.renderCart();
+      }
+
+      renderCart() {
+        const container = document.getElementById('cart-items-list');
+        if (this.cart.length === 0) {
+          container.innerHTML = '<p class="text-xs text-stone-400 text-center py-6">購物車是空的</p>';
+          return;
+        }
+        let html = '';
+        let subtotal = 0;
+        this.cart.forEach(item => {
+          const total = item.price * item.qty;
+          subtotal += total;
+          html += `<div class="py-2 flex justify-between text-xs"><span>${item.name} x ${item.qty}</span><span class="font-bold text-rose-600">NT$ ${total}</span></div>`;
+        });
+        container.innerHTML = html;
+        document.getElementById('cart-subtotal').innerText = `$${subtotal}`;
+        document.getElementById('cart-total').innerText = `$${subtotal + 130}`;
+      }
+
+      // 結帳時才檢查登入
+      checkoutOrder() {
+        if (this.cart.length === 0) return;
+        
+        if (!this.currentUser) {
+          this.toggleCartDrawer();
+          this.openAuthModal(); // 彈出 Google 一鍵登入授權
+          return;
+        }
+
+        alert(`訂單送出成功！已為【${this.currentUser.email}】產生對帳單。`);
+        this.cart = [];
+        this.toggleCartDrawer();
+      }
+
+      switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        const target = document.getElementById(`tab-${tabId}`);
+        if (target) target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      toggleSaleSwitch() {
+        this.isSaleOpen = !this.isSaleOpen;
+        const btn = document.getElementById('sale-switch-btn');
+        const tag = document.getElementById('sale-status-tag');
+        if (this.isSaleOpen) {
+          btn.innerText = "搶購狀態：開放中 (點擊切換為12:00等待中)";
+          btn.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1 rounded cursor-pointer transition font-bold";
+          tag.innerText = "每日 12:00 準時解鎖";
+        } else {
+          btn.innerText = "搶購狀態：未到 12:00 (點擊強制開啟下單)";
+          btn.className = "bg-amber-700 hover:bg-amber-600 text-white px-2.5 py-1 rounded cursor-pointer transition font-bold";
+          tag.innerText = "等待中午 12:00 解鎖中";
+        }
+        this.renderFlashSales();
+      }
+
+      renderQA() {
+        const list = document.getElementById('qa-list');
+        if (!list) return;
+        let html = '';
+        this.qaData.forEach((item, index) => {
+          html += `
+            <div class="border border-amber-200 rounded-xl bg-amber-50/30 overflow-hidden">
+              <button onclick="app.toggleQA(${index})" class="w-full text-left p-3 font-bold text-stone-900 text-xs flex justify-between">
+                <span>${item.q}</span><i id="qa-icon-${index}" class="fa-solid fa-chevron-down text-xs"></i>
+              </button>
+              <div id="qa-ans-${index}" class="hidden p-3 pt-0 text-xs text-stone-600 bg-white border-t border-amber-100">${item.a}</div>
+            </div>
+          `;
+        });
+        list.innerHTML = html;
+      }
+
+      toggleQA(index) { document.getElementById(`qa-ans-${index}`).classList.toggle('hidden'); }
+      openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); this.switchAdminPane('orders'); }
+      closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+      switchAdminPane(paneId) {
+        ['orders', 'flash', 'frozen', 'stats'].forEach(p => {
+          const pane = document.getElementById(`adm-pane-${p}`);
+          const tab = document.getElementById(`adm-tab-${p}`);
+          if (pane) pane.classList.add('hidden');
+          if (tab) tab.className = "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition";
+        });
+        const activePane = document.getElementById(`adm-pane-${paneId}`);
+        const activeTab = document.getElementById(`adm-tab-${paneId}`);
+        if (activePane) activePane.classList.remove('hidden');
+        if (activeTab) activeTab.className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-900 text-white transition";
+
+        if (paneId === 'stats') this.renderStats('daily');
+        else if (paneId === 'orders') this.renderAdminOrders();
+      }
+
+      renderAdminOrders() {
+        const container = document.getElementById('admin-orders-list');
+        if (!container) return;
+        let html = '';
+        this.orders.forEach(o => {
+          html += `
+            <div class="p-3 bg-stone-50 rounded-xl border text-xs space-y-1">
+              <div class="flex justify-between font-bold"><span>訂單 ${o.id} (${o.userEmail})</span><span class="text-emerald-700">已核銷</span></div>
+              <p class="text-stone-500">品項：${o.items.map(i => `${i.name}x${i.qty}`).join(', ')} | 總額: NT$ ${o.total}</p>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      renderStats(range) {
+        const container = document.getElementById('stats-summary-cards');
+        if (!container) return;
+        let revenue = 0, cost = 0;
+        this.orders.forEach(o => {
+          revenue += o.total;
+          o.items.forEach(i => cost += (i.cost || 0) * i.qty);
+        });
+        const profit = revenue - cost;
+
+        container.innerHTML = `
+          <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center">
+            <p class="text-[10px] text-stone-500">營業總額</p>
+            <p class="text-lg font-black text-amber-900">$${revenue}</p>
+          </div>
+          <div class="bg-rose-50 p-3 rounded-xl border border-rose-200 text-center">
+            <p class="text-[10px] text-stone-500">進貨總成本</p>
+            <p class="text-lg font-black text-rose-800">$${cost}</p>
+          </div>
+          <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-center">
+            <p class="text-[10px] text-stone-500">毛利潤</p>
+            <p class="text-lg font-black text-emerald-800">$${profit}</p>
+          </div>
+          <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-center">
+            <p class="text-[10px] text-stone-500">毛利率</p>
+            <p class="text-lg font-black text-blue-800">${revenue > 0 ? ((profit/revenue)*100).toFixed(1) : 0}%</p>
+          </div>
+        `;
+      }
+    }
+
+    let app;
+    window.addEventListener('DOMContentLoaded', () => { app = new SeafoodLocalApp(); });
+  </script>
+</body>
+</html>

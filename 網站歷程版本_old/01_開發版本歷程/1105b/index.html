@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>基隆鮮物．崁仔頂小商人 khàm-tíng | 官方主頁與對帳中心</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background: linear-gradient(135deg, #091e3a 0%, #0f172a 100%); color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* Navbar */
+        nav { background-color: #020617; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding: 16px 24px; position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-logo { width: 40px; height: 40px; background-color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.3); }
+        .nav-title h1 { font-size: 18px; font-weight: 700; color: #e0f2fe; }
+        .nav-title p { font-size: 11px; color: #38bdf8; }
+        
+        .cart-btn { background: none; border: none; cursor: pointer; position: relative; color: #38bdf8; padding: 8px; font-size: 24px; transition: color 0.2s; }
+        .cart-btn:hover { color: #bae6fd; }
+        .cart-badge { position: absolute; top: 0; right: 0; background-color: #e11d48; color: white; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #020617; }
+
+        /* Main Container */
+        main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+        /* Banner */
+        .notice-banner { background: rgba(14, 116, 144, 0.2); border-left: 4px solid #38bdf8; border-radius: 0 12px 12px 0; padding: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; backdrop-filter: blur(8px); }
+        .notice-text h2 { font-size: 14px; font-weight: 700; color: #bae6fd; }
+        .notice-text p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .guide-btn { background-color: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+        .guide-btn:hover { background-color: #0369a1; }
+
+        /* Schedule Bar */
+        .schedule-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .schedule-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+        .schedule-btn.active { background: #e11d48; border-color: #e11d48; color: white; box-shadow: 0 0 15px rgba(225, 29, 72, 0.4); }
+
+        /* Grid Layout */
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* Header */
+        .sec-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #e11d48; padding-bottom: 8px; margin-bottom: 16px; }
+        .sec-title-wrap span { background-color: #e11d48; color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+        .sec-title-wrap h2 { font-size: 18px; font-weight: 900; color: #f8fafc; margin-top: 4px; }
+        .sec-sub { font-size: 12px; color: #94a3b8; }
+
+        /* Product Grid */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+        .product-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; backdrop-filter: blur(8px); transition: transform 0.2s, box-shadow 0.2s; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2); }
+        .product-img { width: 100%; height: 160px; object-fit: cover; }
+        .product-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: space-between; }
+        .product-name { font-size: 15px; font-weight: 700; color: #f8fafc; }
+        .product-spec { font-size: 12px; color: #94a3b8; }
+        .product-desc { font-size: 11px; color: #cbd5e1; background: rgba(30, 41, 59, 0.5); padding: 6px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4; }
+        .product-price-stock { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 18px; font-weight: 900; color: #fb7185; }
+        .huge-stock { font-size: 22px; font-weight: 900; color: #ef4444; }
+
+        .product-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+        select { background-color: #1e293b; border: 1px solid #475569; color: #f8fafc; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; outline: none; }
+        .buy-btn { flex: 1; background-color: #e11d48; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .buy-btn:hover { background-color: #be123c; }
+
+        .frozen-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .frozen-info h4 { font-size: 14px; font-weight: 700; color: #f8fafc; }
+        .frozen-info p { font-size: 11px; color: #94a3b8; margin: 2px 0; }
+        .frozen-price { font-size: 14px; font-weight: 800; color: #38bdf8; }
+        .frozen-buy-btn { background-color: #0284c7; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+        /* Modal Overlays */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #0f172a; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
+        .modal-header { padding: 20px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 16px; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+        .close-btn { background: none; border: none; color: #94a3b8; font-size: 22px; cursor: pointer; }
+        .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        
+        .shipping-hook-box { background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 14px; font-size: 12px; color: #e0f2fe; display: flex; flex-direction: column; gap: 8px; }
+        .progress-bar-bg { width: 100%; height: 8px; background-color: #1e293b; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981); width: 0%; transition: width 0.4s ease; }
+
+        /* Form Inputs */
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 700; color: #cbd5e1; }
+        .form-control { background-color: #1e293b; border: 1px solid #475569; color: white; padding: 10px; border-radius: 8px; font-size: 13px; outline: none; }
+        .form-control:focus { border-color: #38bdf8; }
+
+        .alert-box { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 12px; font-size: 11px; color: #fde68a; line-height: 1.5; }
+        .timer-box { background: rgba(225, 29, 72, 0.15); border: 1px solid rgba(225, 29, 72, 0.4); border-radius: 12px; padding: 12px; font-size: 12px; color: #fca5a5; font-weight: bold; text-align: center; }
+
+        .modal-footer { padding: 16px 20px; border-top: 1px solid #1e293b; display: flex; justify-content: flex-end; gap: 8px; }
+        .btn-secondary { background-color: #334155; color: #cbd5e1; border: none; padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .btn-primary { background-color: #e11d48; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4); }
+
+        .emap-btn { background: #0284c7; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+
+        footer { background-color: #020617; color: #64748b; font-size: 11px; padding: 24px; text-align: center; border-top: 1px solid rgba(56, 189, 248, 0.1); }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-brand">
+            <div class="nav-logo">⚓</div>
+            <div class="nav-title">
+                <h1>基隆鮮物．崁仔頂小商人</h1>
+                <p>週二至週日現流漁獲 ✕ 極速對帳專區</p>
+            </div>
+        </div>
+        <button onclick="app.openCartModal()" class="cart-btn">
+            🛒
+            <span id="cart-badge" class="cart-badge">0</span>
+        </button>
+    </nav>
+
+    <!-- 主要內容區 -->
+    <main>
+        <!-- 頂部運費與限時對帳公告 -->
+        <div class="notice-banner">
+            <div class="notice-text">
+                <h2>🚚 當週最新出貨與運費規則</h2>
+                <p>滿 $3,000 免運費 | $2,000~$2,999 運費 $60 | 未滿 $2,000 運費 $130 (現流庫存保留 24 小時，請儘速填單)</p>
+            </div>
+            <button onclick="app.openGuideModal()" class="guide-btn">📖 檢視指南海報</button>
+        </div>
+
+        <!-- 週排程列 -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 13px; font-weight: bold; color: #38bdf8;">📅 選擇預訂現流漁獲日 (週二至週日)：</div>
+            <div id="schedule-days-bar" class="schedule-bar"></div>
+        </div>
+
+        <!-- 雙欄網格 -->
+        <div class="grid-layout">
+            <div>
+                <div class="sec-header">
+                    <div class="sec-title-wrap">
+                        <span id="current-day-tag">週二現流開賣</span>
+                        <h2>🔥 每日現流限量搶購區</h2>
+                    </div>
+                    <span class="sec-sub">庫存即時連動中</span>
+                </div>
+                <div id="fresh-products-list" class="products-grid"></div>
+            </div>
+            <div>
+                <div class="sec-header" style="border-bottom-color: #0284c7;">
+                    <div class="sec-title-wrap">
+                        <span style="background-color: #0284c7;">常態供應</span>
+                        <h2>❄️ 冷凍常規嚴選專區</h2>
+                    </div>
+                </div>
+                <div id="frozen-products-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 基隆鮮物．崁仔頂小商人 khàm-tíng. All Rights Reserved.</p>
+    </footer>
+
+    <!-- 🛒 Modal 1：極速下單modal -->
+    <div id="cart-checkout-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>⚡ 確認購物車與送出訂單</h3>
+                <button onclick="app.closeCartModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items-summary" style="background: rgba(30, 41, 59, 0.6); padding: 12px; border-radius: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 6px;"></div>
+                <div id="shipping-hook-container" class="shipping-hook-box"></div>
+
+                <div class="timer-box">
+                    ⏳ 提示：下單後現流庫存將為您<strong>限時保留 24 小時</strong>，請完成轉帳後點擊 Email 內的按鈕填單！
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #1e293b; padding-top: 12px;">
+                    <h4 style="font-size: 13px; font-weight: 700; color: #f8fafc;">Step 1. 請填寫基本聯絡資訊</h4>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>電子郵件 (Email) *</label>
+                            <input id="checkout-email" type="email" placeholder="example@gmail.com" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>手機後 4 碼 *</label>
+                            <input id="checkout-phone4" type="text" maxlength="4" placeholder="5678" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="app.closeCartModal()" class="btn-secondary">返回繼續選購</button>
+                <button onclick="app.submitInstantOrder()" class="btn-primary">送出訂單並取得匯款按鈕信</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✉️ Modal 2：點擊 Email 連結開啟的一鍵對帳與收件門市填寫 modal -->
+    <div id="remittance-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="color: #38bdf8;">💳 買家匯款與超商收件門市回報專區</h3>
+                <button onclick="app.closeRemittanceModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-box">
+                    <strong>📌 訂單對帳填寫說明：</strong><br>
+                    您正在回報訂單編號：<strong id="report-target-orderid" style="color:#38bdf8;">-</strong><br>
+                    請填寫以下完成匯款資訊與備用門市，避免冷凍庫滿載無法寄送！
+                </div>
+
+                <div class="form-group">
+                    <label>匯款金額 (NT$) *</label>
+                    <input id="report-amount" type="number" placeholder="例如: 3000" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>匯款帳號後 5 碼 *</label>
+                    <input id="report-last5" type="text" maxlength="5" placeholder="例如: 12345" class="form-control">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label>收件人姓名 *</label>
+                        <input id="report-name" type="text" placeholder="王小明" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>收件人手機 *</label>
+                        <input id="report-phone" type="tel" placeholder="0912345678" class="form-control">
+                    </div>
+                </div>
+
+                <!-- 門市雙備份選擇 + 地圖連結按鈕 -->
+                <div class="form-group" style="background: rgba(30, 41, 59, 0.6); padding: 10px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label>7-11 收件門市名稱/店號 *</label>
+                        <a href="https://emap.pcsc.com.tw/" target="_blank" class="emap-btn">🗺️ 開啟 7-11 地圖查詢</a>
+                    </div>
+                    <input id="report-711" type="text" placeholder="例如: 基隆愛興店 (店號 123456)" class="form-control">
+                </div>
+
+                <div class="form-group" style="background: rgba(30, 41, 59, 0.6); padding: 10px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-align: center; margin-bottom: 4px;">
+                        <label>全家 收件門市名稱/店號 (備用門市) *</label>
+                        <a href="https://www.family.com.tw/marketing/inquiry.aspx" target="_blank" class="emap-btn" style="background:#10b981;">🗺️ 開啟全家地圖查詢</a>
+                    </div>
+                    <input id="report-family" type="text" placeholder="例如: 基隆港都店 (店號 98765)" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>出貨選項偏好 (ABC) *</label>
+                    <select id="report-shipping-option" class="form-control">
+                        <option value="選項 A: 週二~週四出貨">選項 A: 週二~週四第一批直送出貨</option>
+                        <option value="選項 B: 週五~週日出貨">選項 B: 週五~週日週末排程出貨</option>
+                        <option value="選項 C: 配合現流齊全再出貨">選項 C: 等候所有現流漁獲補齊後再出貨</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="app.submitRemittanceReport()" class="btn-primary" style="width: 100%;">✓ 確認送出對帳與門市資料</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SeafoodApp {
+            constructor() {
+                this.googleSheetsApiUrl = "https://script.google.com/macros/s/AKfycbz6Qbm36W0_vjIbATiAn5_5EVirP8pnu0yZFXTYYYKOq6q-yqIqVbDV2JPOsFgFfUMp/exec";
+                this.cart = JSON.parse(localStorage.getItem('seafood_cart')) || [];
+                this.selectedDay = '週二';
+                this.daysList = ['週二', '週三', '週四', '週五', '週六', '週日'];
+
+                this.freshProducts = JSON.parse(localStorage.getItem('seafood_fresh')) || [
+                    { id: 'f1', name: '野生現流土魠魚塊', spec: '300g±10%', price: 280, stock: 15, day: '週二', desc: '肉質細緻鮮甜，清蒸或香煎皆宜，崁仔頂當日現流野生直配。', img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500' },
+                    { id: 'f2', name: '崁仔頂現流白帶魚(切塊)', spec: '300g±10%', price: 210, stock: 20, day: '週二', desc: '油脂豐富、肉質綿密，香煎至金黃酥脆風味最佳。', img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500' },
+                    { id: 'f3', name: '野生現流石斑魚排', spec: '350g±10%', price: 350, stock: 12, day: '週三', desc: '肉質Q彈緊實，膠原蛋白豐富，煮湯或清蒸首選。', img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500' }
+                ];
+
+                this.frozenProducts = JSON.parse(localStorage.getItem('seafood_frozen')) || [
+                    { id: 'fz1', name: '深海大白鯧 (真空冷凍)', spec: '500g/尾', price: 680, stock: 50 },
+                    { id: 'fz2', name: '日本生食級干貝 3S', spec: '250g/盒', price: 520, stock: 30 }
+                ];
+
+                this.init();
+            }
+
+            init() {
+                this.renderScheduleBar();
+                this.renderProducts();
+                this.updateCartBadge();
+                this.checkUrlParameters();
+            }
+
+            // 檢查 URL 是否帶有 Email 按鈕點擊參數 (orderId)
+            checkUrlParameters() {
+                const params = new URLSearchParams(window.location.search);
+                const orderId = params.get('orderId');
+                const email = params.get('email');
+                if (orderId) {
+                    document.getElementById('report-target-orderid').innerText = orderId;
+                    if(email) document.getElementById('checkout-email').value = email;
+                    document.getElementById('remittance-modal').classList.add('active');
+                }
+            }
+
+            renderScheduleBar() {
+                const bar = document.getElementById('schedule-days-bar');
+                bar.innerHTML = this.daysList.map(day => `
+                    <button onclick="app.switchDay('${day}')" class="schedule-btn ${this.selectedDay === day ? 'active' : ''}">
+                        📅 ${day} 現流開賣
+                    </button>
+                `).join('');
+                document.getElementById('current-day-tag').innerText = `${this.selectedDay} 現流開賣`;
+            }
+
+            switchDay(day) {
+                this.selectedDay = day;
+                this.renderScheduleBar();
+                this.renderProducts();
+            }
+
+            generateOptions(max) {
+                let options = '';
+                for (let i = 1; i <= max; i++) options += `<option value="${i}">+${i} 份</option>`;
+                return options;
+            }
+
+            renderProducts() {
+                const freshEl = document.getElementById('fresh-products-list');
+                const filteredFresh = this.freshProducts.filter(p => !p.day || p.day === this.selectedDay);
+
+                if (freshEl) {
+                    freshEl.innerHTML = filteredFresh.map(p => `
+                        <div class="product-card">
+                            <img src="${p.img}" class="product-img" alt="${p.name}">
+                            <div class="product-body">
+                                <div>
+                                    <h3 class="product-name">${p.name}</h3>
+                                    <p class="product-spec">${p.spec} | ${p.day || '週二'}現流</p>
+                                </div>
+                                ${p.desc ? `<p class="product-desc">💡 ${p.desc}</p>` : ''}
+                                <div class="product-price-stock">
+                                    <span class="price">NT$ ${p.price}</span>
+                                    <span style="font-size:11px; color:#cbd5e1;">剩餘: <strong class="huge-stock">${p.stock}</strong> 份</span>
+                                </div>
+                                <div class="product-actions">
+                                    <select id="select-qty-${p.id}">${this.generateOptions(p.stock > 0 ? p.stock : 1)}</select>
+                                    <button onclick="app.buyFresh('${p.id}')" class="buy-btn">⚡ 立即搶購</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                const frozenEl = document.getElementById('frozen-products-list');
+                if (frozenEl) {
+                    frozenEl.innerHTML = this.frozenProducts.map(p => `
+                        <div class="frozen-card">
+                            <div class="frozen-info">
+                                <h4>${p.name}</h4>
+                                <p>${p.spec} | 庫存 ${p.stock}</p>
+                                <span class="frozen-price">NT$ ${p.price}</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select id="select-qty-${p.id}">${this.generateOptions(6)}</select>
+                                <button onclick="app.addToCartFromSelect('${p.id}', 'frozen')" class="frozen-buy-btn">加入</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            buyFresh(id) {
+                const p = this.freshProducts.find(item => item.id === id);
+                const qty = parseInt(document.getElementById(`select-qty-${id}`).value, 10);
+                if (!p || p.stock < qty) return alert(`庫存不足！`);
+                p.stock -= qty;
+                localStorage.setItem('seafood_fresh', JSON.stringify(this.freshProducts));
+                this.addToCartWithQty(id, 'fresh', qty, p);
+                this.renderProducts();
+            }
+
+            addToCartFromSelect(id, type) {
+                const p = this.frozenProducts.find(item => item.id === id);
+                const qty = parseInt(document.getElementById(`select-qty-${id}`).value, 10);
+                this.addToCartWithQty(id, type, qty, p);
+            }
+
+            addToCartWithQty(id, type, qty, p) {
+                const exist = this.cart.find(item => item.id === id);
+                if (exist) exist.qty += qty;
+                else this.cart.push({ id: p.id, name: p.name, price: p.price, qty: qty, type });
+                localStorage.setItem('seafood_cart', JSON.stringify(this.cart));
+                this.updateCartBadge();
+            }
+
+            updateCartBadge() {
+                document.getElementById('cart-badge').innerText = this.cart.reduce((sum, item) => sum + item.qty, 0);
+            }
+
+            openCartModal() {
+                if (this.cart.length === 0) return alert('購物車是空的！');
+                const subtotal = this.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+                let shipping = subtotal >= 3000 ? 0 : (subtotal >= 2000 ? 60 : 130);
+                
+                let html = `<div style="font-weight: 700; border-bottom: 1px solid #334155; padding-bottom: 4px; color: #38bdf8;">🛒 購物清單摘要 (共 ${this.cart.reduce((s,i)=>s+i.qty,0)} 件)</div>`;
+                this.cart.forEach(i => {
+                    html += `<div style="display: flex; justify-content: space-between; color: #cbd5e1;"><span>${i.name} x ${i.qty}</span><span>NT$ ${i.price * i.qty}</span></div>`;
+                });
+                html += `<div style="border-top: 1px solid #334155; padding-top: 6px; font-weight: 700; display: flex; justify-content: space-between; color: #f8fafc;"><span>小計 NT$ ${subtotal} | 運費 NT$ ${shipping}</span><span style="color: #fb7185; font-size: 14px;">應付總額：NT$ ${subtotal + shipping}</span></div>`;
+                
+                document.getElementById('cart-items-summary').innerHTML = html;
+                document.getElementById('cart-checkout-modal').classList.add('active');
+            }
+
+            closeCartModal() { document.getElementById('cart-checkout-modal').classList.remove('active'); }
+            closeRemittanceModal() { document.getElementById('remittance-modal').classList.remove('active'); }
+
+            async submitInstantOrder() {
+                const email = document.getElementById('checkout-email').value.trim();
+                const phone4 = document.getElementById('checkout-phone4').value.trim();
+
+                if (!email || !email.includes('@')) return alert('請填寫正確的 Email！');
+                if (!phone4 || phone4.length !== 4) return alert('請填寫手機後四碼！');
+
+                const subtotal = this.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+                let shipping = subtotal >= 3000 ? 0 : (subtotal >= 2000 ? 60 : 130);
+                const orderId = 'ORD-' + Date.now().toString().slice(-6);
+
+                const orderData = {
+                    action: 'newOrder',
+                    orderId: orderId,
+                    createdAt: new Date().toLocaleString(),
+                    userEmail: email,
+                    userPhone4: phone4,
+                    items: [...this.cart],
+                    subtotal: subtotal,
+                    shipping: shipping,
+                    grandTotal: subtotal + shipping,
+                    isSettled: false,
+                    isPrinted: false
+                };
+
+                // 儲存於 LocalStorage 提供測試與後台連動
+                let localOrders = JSON.parse(localStorage.getItem('seafood_orders')) || [];
+                localOrders.unshift(orderData);
+                localStorage.setItem('seafood_orders', JSON.stringify(localOrders));
+
+                try {
+                    await fetch(this.googleSheetsApiUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+                } catch (e) { console.log('發送中', e); }
+
+                alert(`🎉 訂單已成功建立！\n訂單編號：${orderId}\n\n系統已發送包含「一鍵對帳回報按鈕」的郵件至：${email}。\n現流漁獲為您保留 24 小時，請前往收信並點擊按鈕填寫資訊！`);
+
+                this.cart = [];
+                localStorage.removeItem('seafood_cart');
+                this.updateCartBadge();
+                this.closeCartModal();
+            }
+
+            // 顧客點擊按鈕後送出回報資料
+            async submitRemittanceReport() {
+                const orderId = document.getElementById('report-target-orderid').innerText;
+                const amount = document.getElementById('report-amount').value.trim();
+                const last5 = document.getElementById('report-last5').value.trim();
+                const name = document.getElementById('report-name').value.trim();
+                const phone = document.getElementById('report-phone').value.trim();
+                const store711 = document.getElementById('report-711').value.trim();
+                const storeFamily = document.getElementById('report-family').value.trim();
+                const shippingOption = document.getElementById('report-shipping-option').value;
+
+                if (!amount || !last5 || last5.length !== 5) return alert('請完整填寫匯款金額與帳號後 5 碼！');
+                if (!name || !phone) return alert('請填寫收件人姓名與手機！');
+                if (!store711 || !storeFamily) return alert('請填寫 7-11 與全家備用門市，以防超商冷凍庫滿載退單！');
+
+                const reportData = {
+                    action: 'updateRemittance',
+                    orderId: orderId,
+                    remitAmount: amount,
+                    remitLast5: last5,
+                    recipientName: name,
+                    recipientPhone: phone,
+                    store711: store711,
+                    storeFamily: storeFamily,
+                    shippingOption: shippingOption
+                };
+
+                // 更新 LocalStorage
+                let localOrders = JSON.parse(localStorage.getItem('seafood_orders')) || [];
+                let target = localOrders.find(o => o.orderId === orderId);
+                if (target) {
+                    target.remitAmount = amount;
+                    target.remitLast5 = last5;
+                    target.recipientName = name;
+                    target.recipientPhone = phone;
+                    target.store711 = store711;
+                    target.storeFamily = storeFamily;
+                    target.shippingOption = shippingOption;
+                    localStorage.setItem('seafood_orders', JSON.stringify(localOrders));
+                }
+
+                try {
+                    await fetch(this.googleSheetsApiUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(reportData)
+                    });
+                } catch (e) { console.log('發送中', e); }
+
+                alert(`✅ 感謝您的回報！對帳與門市資料已成功送出。\n小商人會儘速完成手動對帳並為您備貨出貨！`);
+                this.closeRemittanceModal();
+            }
+
+            openGuideModal() { alert("【新人指南與 24hr 保留規則】\n1. 下單後現流庫存保留 24 小時\n2. 請查收 Email 並點擊回報按鈕填寫 7-11 及全家備用門市\n3. 滿 $3,000 免運費！"); }
+        }
+
+        let app;
+        document.addEventListener('DOMContentLoaded', () => { app = new SeafoodApp(); });
+    </script>
+</body>
+</html>

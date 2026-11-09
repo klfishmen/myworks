@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>基隆鮮物．崁仔頂小商人 khàm-tíng | [對外封閉測試版]</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes stockBump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.8); color: #ef4444; text-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+            100% { transform: scale(1); }
+        }
+        .stock-bump-active {
+            animation: stockBump 0.6s ease-in-out;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-amber-50/60 text-stone-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar (純買家介面) -->
+    <nav class="bg-stone-900 text-stone-100 py-4 px-4 sm:px-8 shadow-xl border-b border-amber-600/30 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-stone-900 font-black text-xl shadow-inner">
+                    ⚓
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-wide text-amber-100">基隆鮮物．崁仔頂小商人</h1>
+                    <p class="text-xs text-amber-400/80">每日現流野生海鮮 ✕ 極速冷凍鮮貨專賣 <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded text-[10px] ml-1">對外封閉測試版</span></p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="app.openCartModal()" class="relative p-2 text-amber-200 hover:text-white transition">
+                    <i class="fa-solid fa-basket-shopping text-2xl"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-stone-900">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區 (Grid 雙欄 2/3 與 1/3 連貫結構) -->
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 flex-1 space-y-8">
+        
+        <!-- 頂部運費公告 -->
+        <div class="bg-amber-100 border-l-4 border-amber-600 p-4 rounded-r-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div>
+                <h2 class="text-amber-900 font-bold text-sm sm:text-base"><i class="fa-solid fa-truck-fast mr-2"></i>當週最新出貨與運費規則</h2>
+                <p class="text-xs sm:text-sm text-stone-600 mt-0.5">滿 $3,000 免運費 | $2,000~$2,999 運費 $60 | 未滿 $2,000 運費 $130 (暫停寄庫，當週結單當週出貨)</p>
+            </div>
+            <button onclick="app.openGuideModal()" class="bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold px-3 py-2 rounded-lg transition whitespace-nowrap">
+                <i class="fa-regular fa-image mr-1"></i> 檢視新人指南海報
+            </button>
+        </div>
+
+        <!-- 核心兩欄版型網格 (左 2/3、右 1/3 貫穿到底) -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            <!-- 左欄：2/3 寬度 (含現流商品 + 實況影片區) -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- 1. 現流搶購區 -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-end border-b-2 border-rose-600 pb-2">
+                        <div>
+                            <span class="bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-sm">每日 12:00 開放</span>
+                            <h2 class="text-xl font-black text-stone-900 mt-1"><i class="fa-solid fa-fire text-rose-600 mr-2"></i>每日現流限量搶購區</h2>
+                        </div>
+                        <span class="text-xs text-stone-500">庫存即時連動中</span>
+                    </div>
+                    <div id="fresh-products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- 現流商品渲染處 -->
+                    </div>
+                </div>
+
+                <!-- 2. 影片展示區 (收納在左側 2/3) -->
+                <div class="bg-stone-900 text-stone-100 p-5 rounded-2xl shadow-xl space-y-3">
+                    <h2 class="text-base font-bold text-amber-400 flex items-center">
+                        <i class="fa-solid fa-video mr-2"></i>崁仔頂現場實況與漁獲介紹
+                    </h2>
+                    <div class="aspect-video bg-stone-800 rounded-xl overflow-hidden border border-stone-700 flex items-center justify-center">
+                        <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/live_stream?channel=YOUR_CHANNEL_ID" title="魚市實況" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右欄：1/3 寬度 (冷凍商品一路向下滑動直落到底) -->
+            <div class="space-y-4 lg:sticky lg:top-24">
+                <div class="border-b-2 border-blue-600 pb-2">
+                    <span class="bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded-sm">常態供應</span>
+                    <h2 class="text-xl font-black text-stone-900 mt-1"><i class="fa-solid fa-snowflake text-blue-500 mr-2"></i>冷凍常規嚴選專區</h2>
+                </div>
+                <div id="frozen-products-list" class="space-y-3">
+                    <!-- 冷凍品項渲染處 -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- QA 區塊 -->
+        <section id="qa-section" class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+            <div class="border-b pb-3">
+                <h2 class="text-xl font-bold text-stone-900"><i class="fa-solid fa-circle-question text-amber-600 mr-2"></i>常見問答 Q&A 與新人須知</h2>
+            </div>
+            <div onclick="app.openGuideModal()" class="bg-amber-950 text-amber-100 p-4 rounded-xl shadow cursor-pointer hover:opacity-95 transition flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-newspaper text-3xl text-amber-400"></i>
+                    <div>
+                        <h3 class="font-bold text-amber-200">新人進站必讀懶人包海報</h3>
+                        <p class="text-xs text-amber-400/80">包含出貨時間、匯款步驟與免運優惠全攻略</p>
+                    </div>
+                </div>
+                <span class="bg-amber-500 text-stone-950 text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap">點擊開啟海報</span>
+            </div>
+            <div class="space-y-3 text-sm text-stone-700">
+                <details class="p-3 bg-stone-50 rounded-lg"><summary class="font-bold cursor-pointer">如何付款與填寫匯款資料？</summary><p class="mt-2 text-stone-600">請於下單後查收 Email 確認信，依信中帳號轉帳後，直接回覆 Email 提供帳號末 5 碼與收件門市。</p></details>
+                <details class="p-3 bg-stone-50 rounded-lg"><summary class="font-bold cursor-pointer">運費如何計算與合併？</summary><p class="mt-2 text-stone-600">當週同一買家帳號訂單自動合併：滿 $3,000 免運，$2,000~$2,999 運費 $60，未滿 $2,000 運費 $130。</p></details>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 懸浮對話按鈕 -->
+    <button onclick="app.openChatModal()" class="fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-4 rounded-full shadow-2xl flex items-center space-x-2 border-2 border-white transition-all transform hover:scale-105">
+        <i class="fa-solid fa-comments text-xl"></i>
+        <span class="text-xs hidden sm:inline">對話留言</span>
+    </button>
+
+    <footer class="bg-stone-900 text-stone-400 text-xs py-6 text-center border-t border-stone-800 space-y-2">
+        <p>© 2026 基隆鮮物．崁仔頂小商人 khàm-tíng. All Rights Reserved.</p>
+        <p class="text-stone-500">封閉測試體驗版 | 下單數據將自動同步至對帳系統</p>
+    </footer>
+
+    <!-- JS 邏輯 -->
+    <script>
+        class SeafoodBetaApp {
+            constructor() {
+                // 已精準對應您最新產生的 Google Apps Script Web App URL
+                this.googleSheetsApiUrl = "https://script.google.com/macros/s/AKfycbx8y39aVON-O9rHQS1HHpWR8WkYBmhRRLa2X2FlVcxAbms2Ks4ZPjdouDPKzGWMz-s/exec";
+                this.user = JSON.parse(localStorage.getItem('seafood_beta_user')) || null;
+                this.cart = JSON.parse(localStorage.getItem('seafood_beta_cart')) || [];
+                
+                this.freshProducts = JSON.parse(localStorage.getItem('seafood_beta_fresh')) || [
+                    { id: 'f1', name: '野生現流土魠魚塊', spec: '300g±10%', price: 280, stock: 99, img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500' },
+                    { id: 'f2', name: '崁仔頂現流白帶魚(切塊)', spec: '300g±10%', price: 210, stock: 99, img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500' }
+                ];
+
+                this.frozenProducts = JSON.parse(localStorage.getItem('seafood_beta_frozen')) || [
+                    { id: 'fz1', name: '深海大白鯧 (真空冷凍)', spec: '500g/尾', price: 680, stock: 99 },
+                    { id: 'fz2', name: '日本生食級干貝 3S', spec: '250g/盒', price: 520, stock: 99 },
+                    { id: 'fz3', name: '基隆三記手工魚餃', spec: '10條/盒', price: 120, stock: 99 },
+                    { id: 'fz4', name: '嚴選急凍大草蝦', spec: '300g/包', price: 340, stock: 99 },
+                    { id: 'fz5', name: '智利切片大鮭魚', spec: '350g/片', price: 260, stock: 99 },
+                    { id: 'fz6', name: '澎湖手作花枝丸', spec: '600g/包', price: 180, stock: 99 },
+                    { id: 'fz7', name: '頂級蒲燒鰻魚', spec: '200g/尾', price: 450, stock: 99 },
+                    { id: 'fz8', name: '北方船凍甜蝦', spec: '250g/包', price: 390, stock: 99 },
+                    { id: 'fz9', name: '基隆特產天婦羅', spec: '600g/包', price: 95, stock: 99 },
+                    { id: 'fz10', name: '生冷凍帝王蟹腳', spec: '400g/份', price: 890, stock: 99 },
+                    { id: 'fz11', name: '格陵蘭無骨鱈魚切片', spec: '300g/片', price: 290, stock: 99 },
+                    { id: 'fz12', name: '飛魚卵香腸', spec: '300g/包', price: 220, stock: 99 }
+                ];
+
+                this.init();
+            }
+
+            init() {
+                this.renderProducts();
+                this.updateCartBadge();
+                if (!localStorage.getItem('seafood_beta_guided')) {
+                    this.openGuideModal();
+                    localStorage.setItem('seafood_beta_guided', 'true');
+                }
+            }
+
+            generateOptions(max) {
+                let options = '';
+                for (let i = 1; i <= max; i++) {
+                    options += `<option value="${i}">+${i} 份</option>`;
+                }
+                return options;
+            }
+
+            renderProducts() {
+                const freshEl = document.getElementById('fresh-products-list');
+                if (freshEl) {
+                    freshEl.innerHTML = this.freshProducts.map(p => `
+                        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                            <img src="${p.img || 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500'}" class="w-full h-44 object-cover" alt="${p.name}">
+                            <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-stone-900">${p.name}</h3>
+                                    <p class="text-xs text-stone-500">${p.spec}</p>
+                                </div>
+                                <div class="flex justify-between items-center pt-1">
+                                    <span class="text-rose-600 font-black text-lg">NT$ ${p.price}</span>
+                                    <span class="text-xs bg-stone-100 text-stone-700 px-2 py-1 rounded">剩餘庫存: <strong id="stock-${p.id}" class="text-rose-600 font-bold">${p.stock}</strong> 份</span>
+                                </div>
+                                <div class="flex items-center space-x-2 pt-2">
+                                    <select id="select-qty-${p.id}" class="bg-stone-50 border border-stone-300 rounded-lg px-2 py-2 text-xs font-bold text-stone-700 focus:outline-none focus:border-rose-500">
+                                        ${this.generateOptions(10)}
+                                    </select>
+                                    <button onclick="app.buyFresh('${p.id}')" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-lg transition text-xs sm:text-sm flex justify-center items-center">
+                                        <i class="fa-solid fa-bolt mr-1"></i> 立即搶購
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                const frozenEl = document.getElementById('frozen-products-list');
+                if (frozenEl) {
+                    frozenEl.innerHTML = this.frozenProducts.map(p => `
+                        <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm flex justify-between items-center gap-2">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-stone-900 text-sm">${p.name}</h4>
+                                <p class="text-xs text-stone-400">${p.spec} | 庫存 ${p.stock}</p>
+                                <span class="text-blue-600 font-bold text-sm">NT$ ${p.price}</span>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                                <select id="select-qty-${p.id}" class="bg-stone-50 border border-stone-300 rounded-md px-1.5 py-1.5 text-xs font-bold text-stone-700">
+                                    ${this.generateOptions(6)}
+                                </select>
+                                <button onclick="app.addToCartFromSelect('${p.id}', 'frozen')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-md transition whitespace-nowrap">
+                                    加入
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            buyFresh(id) {
+                const p = this.freshProducts.find(item => item.id === id);
+                const selectEl = document.getElementById(`select-qty-${id}`);
+                const qty = selectEl ? parseInt(selectEl.value, 10) : 1;
+
+                if (!p || p.stock < qty) return alert(`庫存不足！剩餘 ${p ? p.stock : 0} 份`);
+                
+                p.stock -= qty;
+                localStorage.setItem('seafood_beta_fresh', JSON.stringify(this.freshProducts));
+                
+                const stockEl = document.getElementById(`stock-${id}`);
+                if (stockEl) {
+                    stockEl.innerText = p.stock;
+                    stockEl.classList.remove('stock-bump-active');
+                    void stockEl.offsetWidth;
+                    stockEl.classList.add('stock-bump-active');
+                }
+                this.addToCartWithQty(id, 'fresh', qty);
+            }
+
+            addToCartFromSelect(id, type) {
+                const selectEl = document.getElementById(`select-qty-${id}`);
+                const qty = selectEl ? parseInt(selectEl.value, 10) : 1;
+                this.addToCartWithQty(id, type, qty);
+            }
+
+            addToCartWithQty(id, type, qty) {
+                const list = type === 'fresh' ? this.freshProducts : this.frozenProducts;
+                const p = list.find(item => item.id === id);
+                if (!p) return;
+
+                const exist = this.cart.find(item => item.id === id);
+                if (exist) {
+                    exist.qty += qty;
+                } else {
+                    this.cart.push({ id: p.id, name: p.name, price: p.price, qty: qty, type });
+                }
+
+                localStorage.setItem('seafood_beta_cart', JSON.stringify(this.cart));
+                this.updateCartBadge();
+            }
+
+            updateCartBadge() {
+                const total = this.cart.reduce((sum, item) => sum + item.qty, 0);
+                const badge = document.getElementById('cart-badge');
+                if (badge) badge.innerText = total;
+            }
+
+            async sendToGoogleSheets(orderData) {
+                if (!this.googleSheetsApiUrl) return;
+                try {
+                    await fetch(this.googleSheetsApiUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+                    console.log("訂單已成功寫入 Google 試算表");
+                } catch (err) {
+                    console.error("試算表寫入失敗:", err);
+                }
+            }
+
+            openGuideModal() {
+                alert("【新人指南與出貨規則】\n1. 中午 12:00 限量開賣\n2. 滿 $3,000 免運，未滿 $2,000 運費 $130\n3. 當日 23:59 前完成匯款與 Email 回報\n4. 隔週二至三統一寄出包裹");
+            }
+
+            openCartModal() {
+                if (this.cart.length === 0) return alert('購物車是空的！');
+                
+                const subtotal = this.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+                let shipping = 130;
+                if (subtotal >= 3000) shipping = 0;
+                else if (subtotal >= 2000) shipping = 60;
+                
+                const grandTotal = subtotal + shipping;
+
+                if (confirm(`購物車小計: NT$ ${subtotal}\n運費: NT$ ${shipping}\n應付總額: NT$ ${grandTotal}\n\n是否確認下單？`)) {
+                    const orderData = {
+                        orderId: 'ORD-BETA-' + Date.now().toString().slice(-6),
+                        createdAt: new Date().toLocaleString(),
+                        userEmail: this.user ? this.user.email : 'beta_tester@example.com',
+                        userName: this.user ? this.user.name : '測試人員',
+                        items: [...this.cart],
+                        subtotal,
+                        shipping,
+                        grandTotal
+                    };
+
+                    this.sendToGoogleSheets(orderData);
+                    alert('下單成功！對帳資料已即時傳送至 Google 試算表。');
+                    this.cart = [];
+                    localStorage.removeItem('seafood_beta_cart');
+                    this.updateCartBadge();
+                }
+            }
+
+            openChatModal() {
+                alert('開啟買家對話視窗 (公開討論 / 私人對帳)');
+            }
+        }
+
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new SeafoodBetaApp();
+        });
+    </script>
+</body>
+</html>

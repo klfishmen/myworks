@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>崁仔頂小商人旗艦後台系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <header class="bg-slate-900 border-b border-cyan-500/30 p-4 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-lg font-bold text-cyan-400">👑 崁仔頂小商人旗艦後台系統 (精簡高效管理控制台)</h1>
+            <a href="index.html" target="_blank" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow">點此切換至買家下單畫面測試</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        <!-- 導覽標籤列 (已移除影片設定) -->
+        <div class="flex flex-wrap gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800">
+            <button onclick="switchAdminTab('orders')" id="btnTabOrders" class="px-4 py-2 rounded-lg text-xs font-bold bg-cyan-600 text-white transition">📦 訂單記錄與出貨明細</button>
+            <button onclick="switchAdminTab('products')" id="btnTabProducts" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">🐟 商品庫存與圖檔管理</button>
+            <button onclick="switchAdminTab('customers')" id="btnTabCustomers" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">👥 VIP 客戶資料庫</button>
+            <button onclick="switchAdminTab('chats')" id="btnTabChats" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">💬 對話備份</button>
+        </div>
+
+        <!-- 1. 訂單記錄與出貨明細 -->
+        <div id="sectionOrders" class="space-y-4">
+            <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <div>
+                    <h3 class="text-sm font-bold text-cyan-400">📋 本週訂單與詳細出貨明細總覽</h3>
+                    <p class="text-xs text-slate-400">手動對帳確認收款 ➔ 檢查商品明細 ➔ 點擊標記已出貨（防止重複出貨）</p>
+                </div>
+                <button onclick="loadCloudOrders()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow">🔄 重新載入雲端訂單</button>
+            </div>
+            <div id="adminOrdersList" class="space-y-3">
+                <!-- 動態載入訂單明細 -->
+            </div>
+        </div>
+
+        <!-- 2. 商品庫存與圖檔管理 -->
+        <div id="sectionProducts" class="space-y-6 hidden">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-cyan-400">🔥 現流商品管理 (含圖檔、說明、價格與庫存)</h3>
+                <button onclick="openAddProductModal('fresh')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">+ 新增現流商品</button>
+            </div>
+            <div id="adminFreshGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+            <div class="flex justify-between items-center pt-6 border-t border-slate-800">
+                <h3 class="text-sm font-bold text-cyan-400">❄️ 冷凍嚴選商品管理 (含圖檔、說明、價格與庫存)</h3>
+                <button onclick="openAddProductModal('frozen')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">+ 新增冷凍商品</button>
+            </div>
+            <div id="adminFrozenGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- 3. 客戶資料庫 -->
+        <div id="sectionCustomers" class="space-y-4 hidden">
+            <h3 class="text-sm font-bold text-cyan-400">👥 VIP 客戶名單與雙門市紀錄</h3>
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden p-4">
+                <p class="text-xs text-slate-400">此處顯示買家回傳之姓名、手機後 4 碼、7-11 與全家門市偏好及累積消費。</p>
+            </div>
+        </div>
+
+        <!-- 4. 對話備份 -->
+        <div id="sectionChats" class="space-y-4 hidden">
+            <h3 class="text-sm font-bold text-cyan-400">💬 私訊對話備份紀錄</h3>
+            <div id="adminChatBackupList" class="space-y-2"></div>
+        </div>
+    </main>
+
+    <!-- 商品編輯/新增 Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <h3 id="modalTitle" class="font-bold text-white text-base">新增商品</h3>
+            <input type="hidden" id="editProductId">
+            <input type="hidden" id="editProductType">
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">商品名稱 *</label>
+                <input type="text" id="modalName" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="例如：澎湖現流大透抽">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">規格 *</label>
+                    <input type="text" id="modalSpec" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="500g±10%">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">價格 (NT$) *</label>
+                    <input type="number" id="modalPrice" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="380">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">庫存數量 *</label>
+                    <input type="number" id="modalStock" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="10">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">狀態</label>
+                    <select id="modalStatus" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                        <option value="active">🟢 上架中</option>
+                        <option value="inactive">🔴 已下架</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">商品圖片網址 (Image URL) *</label>
+                <input type="text" id="modalImage" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="https://images.unsplash.com/...">
+            </div>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">商品說明 / 特色描述 *</label>
+                <textarea id="modalDesc" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white" placeholder="肉質Q彈鮮甜，川燙三秒沾哇沙米！"></textarea>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="saveProductModal()" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white py-2 rounded-lg text-xs font-bold">儲存</button>
+                <button onclick="closeProductModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-bold">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbx3zbCVg9SthFOCi5TRs4rRjYQrmBPVYbmKqu3A5NcYXXegO9h5Fxqf7DnxhEIagZxU/exec';
+        let productsData = {
+            fresh: [
+                { id: 'f1', name: '澎湖現流大透抽', spec: '500g±10%', price: 380, stock: 5, desc: '肉質Q彈鮮甜，川燙三秒沾哇沙米！', image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=600&q=80', status: 'active' }
+            ],
+            frozen: [
+                { id: 'fr1', name: '日本生食級干貝 2S', spec: '1kg/盒', price: 1250, stock: 12, desc: '鮮甜濃郁，生食、煎烤兩相宜。', image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80', status: 'active' }
+            ]
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAdminProducts();
+            loadCloudOrders();
+        });
+
+        function switchAdminTab(tab) {
+            ['orders', 'products', 'customers', 'chats'].forEach(t => {
+                document.getElementById('section' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
+                document.getElementById('btnTab' + t.charAt(0).toUpperCase() + t.slice(1)).className = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+            });
+            document.getElementById('section' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            document.getElementById('btnTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-lg text-xs font-bold bg-cyan-600 text-white transition";
+        }
+
+        async function loadCloudOrders() {
+            const list = document.getElementById('adminOrdersList');
+            list.innerHTML = `<div class="text-xs text-slate-400 p-4 bg-slate-900 rounded-xl">正在從 Google 試算表同步載入訂單與出貨明細...</div>`;
+            try {
+                const res = await fetch(`${API_URL}?action=getOrders`);
+                const orders = await res.json();
+                list.innerHTML = '';
+                if (!orders || orders.length === 0) {
+                    list.innerHTML = `<div class="text-xs text-slate-400 p-4 bg-slate-900 rounded-xl">目前尚無雲端訂單記錄</div>`;
+                    return;
+                }
+                orders.forEach(o => {
+                    list.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3 shadow-md">
+                            <div class="flex justify-between items-center text-xs border-b border-slate-800 pb-2">
+                                <div>
+                                    <span class="font-bold text-cyan-400 text-sm">${o.orderId}</span>
+                                    <span class="ml-2 text-slate-300 font-bold">買家：${o.customerName}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded text-[11px] font-bold">${o.status}</span>
+                                    <span class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded text-[11px] font-bold">${o.shippingStatus}</span>
+                                    <span class="text-red-400 font-bold text-sm">總額: NT$ ${o.totalAmount}</span>
+                                </div>
+                            </div>
+                            <div class="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
+                                <p class="text-cyan-300 font-bold mb-1">🛒 訂購商品明細：</p>
+                                ${o.items.map(i => `<div class="flex justify-between border-b border-slate-900 pb-1"><span>▪️ ${i.name} (${i.spec}) x <b>${i.qty}</b></span><span class="text-slate-200">NT$ ${i.subtotal}</span></div>`).join('')}
+                            </div>
+                            <div class="text-[11px] text-slate-400 bg-slate-950/50 p-2 rounded border border-slate-900">
+                                <b>買家回報與門市資料：</b> ${o.note}
+                            </div>
+                            <div class="flex justify-end space-x-2 pt-1">
+                                <button onclick="alert('已確認收款！')" class="bg-emerald-600/80 hover:bg-emerald-600 text-white px-3 py-1 rounded text-xs font-bold transition">✓ 確認收款</button>
+                                <button onclick="alert('已標記為已出貨！')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded text-xs font-bold transition">印畢標記已出貨</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                list.innerHTML = `<div class="text-xs text-red-400 p-4 bg-slate-900 rounded-xl">載入雲端訂單失敗，請確認 Apps Script 部署網址是否正確。</div>`;
+            }
+        }
+
+        function renderAdminProducts() {
+            const fGrid = document.getElementById('adminFreshGrid');
+            fGrid.innerHTML = '';
+            productsData.fresh.forEach(p => {
+                fGrid.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <img src="${p.image}" class="w-full h-28 object-cover rounded-lg" alt="${p.name}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                                <p class="text-xs text-slate-400">規格: ${p.spec} | NT$ ${p.price}</p>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded ${p.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">${p.status === 'active' ? '上架中' : '已下架'}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 bg-slate-950 p-2 rounded">${p.desc}</p>
+                        <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-800">
+                            <span class="text-cyan-400">庫存: ${p.stock}</span>
+                            <div class="space-x-2">
+                                <button onclick="openEditProductModal('fresh', '${p.id}')" class="text-cyan-400 hover:underline">編輯</button>
+                                <button onclick="deleteProduct('fresh', '${p.id}')" class="text-red-400 hover:underline">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const frGrid = document.getElementById('adminFrozenGrid');
+            frGrid.innerHTML = '';
+            productsData.frozen.forEach(p => {
+                frGrid.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <img src="${p.image}" class="w-full h-28 object-cover rounded-lg" alt="${p.name}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                                <p class="text-xs text-slate-400">規格: ${p.spec} | NT$ ${p.price}</p>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded ${p.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">${p.status === 'active' ? '上架中' : '已下架'}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 bg-slate-950 p-2 rounded">${p.desc}</p>
+                        <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-800">
+                            <span class="text-cyan-400">庫存: ${p.stock}</span>
+                            <div class="space-x-2">
+                                <button onclick="openEditProductModal('frozen', '${p.id}')" class="text-cyan-400 hover:underline">編輯</button>
+                                <button onclick="deleteProduct('frozen', '${p.id}')" class="text-red-400 hover:underline">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openAddProductModal(type) {
+            document.getElementById('modalTitle').innerText = type === 'fresh' ? '新增現流商品' : '新增冷凍商品';
+            document.getElementById('editProductType').value = type;
+            document.getElementById('editProductId').value = '';
+            document.getElementById('modalName').value = '';
+            document.getElementById('modalSpec').value = '';
+            document.getElementById('modalPrice').value = '';
+            document.getElementById('modalStock').value = '10';
+            document.getElementById('modalImage').value = '';
+            document.getElementById('modalDesc').value = '';
+            document.getElementById('modalStatus').value = 'active';
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function openEditProductModal(type, id) {
+            const list = type === 'fresh' ? productsData.fresh : productsData.frozen;
+            const p = list.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('modalTitle').innerText = type === 'fresh' ? '編輯現流商品' : '編輯冷凍商品';
+            document.getElementById('editProductType').value = type;
+            document.getElementById('editProductId').value = p.id;
+            document.getElementById('modalName').value = p.name;
+            document.getElementById('modalSpec').value = p.spec;
+            document.getElementById('modalPrice').value = p.price;
+            document.getElementById('modalStock').value = p.stock;
+            document.getElementById('modalImage').value = p.image;
+            document.getElementById('modalDesc').value = p.desc;
+            document.getElementById('modalStatus').value = p.status;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function saveProductModal() {
+            const type = document.getElementById('editProductType').value;
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('modalName').value.trim();
+            const spec = document.getElementById('modalSpec').value.trim();
+            const price = Number(document.getElementById('modalPrice').value);
+            const stock = Number(document.getElementById('modalStock').value);
+            const image = document.getElementById('modalImage').value.trim();
+            const desc = document.getElementById('modalDesc').value.trim();
+            const status = document.getElementById('modalStatus').value;
+
+            if (!name || !spec || !price || !image) {
+                alert('請完整填寫商品名稱、規格、價格與圖片網址！');
+                return;
+            }
+
+            const list = type === 'fresh' ? productsData.fresh : productsData.frozen;
+            if (id) {
+                const p = list.find(item => item.id === id);
+                if (p) {
+                    p.name = name; p.spec = spec; p.price = price; p.stock = stock; p.image = image; p.desc = desc; p.status = status;
+                }
+            } else {
+                const newId = 'p_' + Date.now();
+                list.push({ id: newId, name, spec, price, stock, image, desc, status });
+            }
+            closeProductModal();
+            renderAdminProducts();
+        }
+
+        function deleteProduct(type, id) {
+            if (confirm('確定要刪除此商品嗎？')) {
+                if (type === 'fresh') {
+                    productsData.fresh = productsData.fresh.filter(p => p.id !== id);
+                } else {
+                    productsData.frozen = productsData.frozen.filter(p => p.id !== id);
+                }
+                renderAdminProducts();
+            }
+        }
+    </script>
+</body>
+</html>

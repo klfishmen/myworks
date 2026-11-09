@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的網頁作品集 | Vibe Coding 成果精選</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ocean: {
+                            950: '#030a14',
+                            900: '#071526',
+                            850: '#0b1f38',
+                            800: '#102a4c',
+                            700: '#173a69',
+                        },
+                        brand: {
+                            coral: '#ff4d4d',
+                            amber: '#f59e0b',
+                            cyan: '#06b6d4',
+                            sky: '#38bdf8',
+                            emerald: '#10b981',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 手機優先觸控體驗與流體滾動 */
+        html { -webkit-tap-highlight-color: transparent; }
+        .glass-panel {
+            background: rgba(11, 31, 56, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+        }
+        .glass-card {
+            background: linear-gradient(145deg, rgba(16, 42, 76, 0.8) 0%, rgba(7, 21, 38, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.14);
+            transition: all 0.25s ease-out;
+        }
+        .glass-card:active {
+            transform: scale(0.985);
+        }
+        @media (min-width: 768px) {
+            .glass-card:hover {
+                border-color: rgba(6, 182, 212, 0.5);
+                transform: translateY(-4px);
+                box-shadow: 0 16px 36px -10px rgba(6, 182, 212, 0.25);
+            }
+        }
+        /* 隱藏行動端滾動條但保持滾動 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 底部安全距離適配 iPhone Home Indicator */
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+    </style>
+</head>
+<body class="bg-ocean-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white pb-20 md:pb-6">
+
+    <!-- 背景動態光暈氛圍 (手機端優化) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-cyan-600/15 rounded-full blur-[90px]"></div>
+        <div class="absolute top-1/3 -right-24 w-80 h-80 bg-sky-500/10 rounded-full blur-[100px]"></div>
+        <div class="absolute -bottom-24 left-1/4 w-80 h-80 bg-red-500/8 rounded-full blur-[100px]"></div>
+    </div>
+
+    <!-- 頂部手機優先 Sticky Header -->
+    <header class="sticky top-0 z-40 border-b border-cyan-500/20 glass-panel">
+        <div class="max-w-7xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
+            <a href="#hero" class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-sky-400 flex items-center justify-center text-base sm:text-lg shadow-md shadow-cyan-500/30">
+                    ⚓
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-slate-200 tracking-wide block">我的網頁作品集</span>
+                    <span class="text-[10px] text-cyan-400 font-medium">Vibe Coding 成果集</span>
+                </div>
+            </a>
+
+            <!-- 桌面版選單 -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="#hero" class="hover:text-cyan-400 transition-colors">首頁</a>
+                <a href="#about" class="hover:text-cyan-400 transition-colors">👤 關於我</a>
+                <a href="#catalog" class="hover:text-cyan-400 transition-colors">📂 作品目錄</a>
+                <a href="#timeline" class="hover:text-cyan-400 transition-colors">📅 版本演進</a>
+            </nav>
+
+            <!-- 右側即時狀態 Badge -->
+            <div class="flex items-center space-x-2">
+                <a href="#about" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>關於作者</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 1. 首頁 Hero 區域 (使用者要求大標題「我的網頁作品集」) -->
+    <section id="hero" class="pt-8 pb-10 px-4 max-w-7xl mx-auto text-center">
+        <!-- 標題徽章 -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/30 text-cyan-300 text-xs font-medium mb-4">
+            <span class="text-brand-coral">⚡</span> Mobile-First ✕ Vibe Coding
+        </div>
+
+        <!-- 使用者指定大標題 -->
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4">
+            我的網頁作品集
+        </h1>
+
+        <!-- 副標題 -->
+        <p class="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base font-normal leading-relaxed mb-6 px-2">
+            以 <span class="text-cyan-400 font-bold">Vibe Coding</span>（AI 自然語言提示詞工程）為核心，將基隆傳統漁市「崁仔頂」的深夜現流搶購與生鮮電商完整數位化。
+        </p>
+
+        <!-- 手機友善數據指標橫條 (橫向滑動/網格) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mx-auto mt-4 px-2">
+            <div class="glass-panel rounded-xl p-3 border border-cyan-500/20 text-center">
+                <div class="text-xl sm:text-2xl font-extrabold text-cyan-400">17 款</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">迭代版本卡片</div>
+            </div>
+            <div class="glass-panel rounded-xl p-3 border border-cyan-500/20 text-center">
+                <div class="text-xl sm:text-2xl font-extrabold text-brand-coral">雙軌架構</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">買家前台 ✕ 控制台</div>
+            </div>
+            <div class="glass-panel rounded-xl p-3 border border-cyan-500/20 text-center">
+                <div class="text-xl sm:text-2xl font-extrabold text-brand-amber">無伺服</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">GAS 雲端資料庫</div>
+            </div>
+            <div class="glass-panel rounded-xl p-3 border border-cyan-500/20 text-center">
+                <div class="text-xl sm:text-2xl font-extrabold text-emerald-400">100%</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">保留原始程式碼</div>
+            </div>
+        </div>
+
+        <!-- 手機快捷按鈕列 -->
+        <div class="flex items-center justify-center gap-3 mt-6">
+            <a href="#catalog" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/25 flex items-center gap-1.5">
+                <span>📂 瀏覽作品目錄</span>
+                <span>↓</span>
+            </a>
+            <a href="#about" class="px-5 py-2.5 rounded-xl border border-cyan-500/30 text-cyan-300 font-semibold text-xs sm:text-sm hover:bg-cyan-500/10">
+                <span>👤 關於我</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 2. 關於我 (About Me) 專區 -->
+    <section id="about" class="max-w-7xl mx-auto px-4 py-8 scroll-mt-16">
+        <div class="glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-8 border-cyan-500/30 relative overflow-hidden">
+            <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                <!-- 頭像與標籤 -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-brand-coral p-1 shadow-xl shadow-cyan-500/20">
+                        <div class="w-full h-full bg-ocean-900 rounded-[14px] flex items-center justify-center text-3xl sm:text-4xl">
+                            🐟
+                        </div>
+                    </div>
+                    <span class="mt-3 px-3 py-0.5 rounded-full text-[11px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                        Vibe Coder / 創作者
+                    </span>
+                    <span class="text-xs text-slate-400 mt-1">基隆崁仔頂小商人專案</span>
+                </div>
+
+                <!-- 關於我詳細介紹內容 -->
+                <div class="flex-1 text-center md:text-left space-y-3">
+                    <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                        <span>關於我 (About Me)</span>
+                        <span class="text-xs font-normal text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">AI Prompt Engineer</span>
+                    </h2>
+                    
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        你好！我是本專案的創作者與主理人。熱衷於運用 <strong class="text-cyan-400">Vibe Coding（AI 提示詞工程驅動開發）</strong> 的敏捷思維，將傳統產業的真實商業痛點轉換為零伺服負擔、高效能的數位化產品。
+                    </p>
+
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        「崁仔頂小商人」是我深入田野訪談基隆夜間漁市所打造的海鮮團購系統。面對傳統魚市凌晨靠港搶購、限量現流防超賣、冷鏈雙超商備用防退件、多單彙整出貨與單張匯款對帳等複雜業務，我透過精準的自然語言 Prompt Specification 與斷點治理，在完全不依賴笨重框架的前提下，完成了從 V0.1 概念到 V1.5 旗艦發行的全流程開發。
+                    </p>
+
+                    <!-- 專業特長標籤組 (手機端觸控好閱覽) -->
+                    <div class="pt-2 flex flex-wrap gap-2 justify-center md:justify-start">
+                        <span class="px-2.5 py-1 bg-ocean-900 text-cyan-300 rounded-lg text-xs border border-cyan-500/20">🎯 Vibe Coding 敏捷架站</span>
+                        <span class="px-2.5 py-1 bg-ocean-900 text-cyan-300 rounded-lg text-xs border border-cyan-500/20">📱 Mobile-First 手機體驗</span>
+                        <span class="px-2.5 py-1 bg-ocean-900 text-cyan-300 rounded-lg text-xs border border-cyan-500/20">☁️ Google Apps Script 無伺服</span>
+                        <span class="px-2.5 py-1 bg-ocean-900 text-cyan-300 rounded-lg text-xs border border-cyan-500/20">🧊 冷鏈物流防呆業務邏輯</span>
+                        <span class="px-2.5 py-1 bg-ocean-900 text-cyan-300 rounded-lg text-xs border border-cyan-500/20">⚡ 單一檔案 SPA 架構</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 作品目錄 (Catalog) 專區：包含每個版本的小圖卡、100字簡介、API、場景、打開按鈕 -->
+    <section id="catalog" class="max-w-7xl mx-auto px-4 py-8 scroll-mt-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-3">
+            <div>
+                <span class="text-cyan-400 text-xs font-bold uppercase tracking-widest">Version Catalog</span>
+                <h2 class="text-xl sm:text-2xl font-bold text-white mt-0.5">
+                    📂 作品目錄 (全版本小圖卡專區)
+                </h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-0.5">為每個迭代版本量身打造之詳細小圖卡，包含 100 字簡介、API 調用與應用場景</p>
+            </div>
+
+            <!-- 手機橫向滾動分類按鈕列 -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="filterBar">
+                <button onclick="filterWorks('all', this)" class="filter-btn active flex-shrink-0 px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs transition">全部版本 (17)</button>
+                <button onclick="filterWorks('flagship', this)" class="filter-btn flex-shrink-0 px-3 py-1.5 rounded-lg bg-ocean-900 text-slate-300 border border-slate-700 text-xs transition">👑 旗艦版</button>
+                <button onclick="filterWorks('client', this)" class="filter-btn flex-shrink-0 px-3 py-1.5 rounded-lg bg-ocean-900 text-slate-300 border border-slate-700 text-xs transition">🛒 買家前台</button>
+                <button onclick="filterWorks('admin', this)" class="filter-btn flex-shrink-0 px-3 py-1.5 rounded-lg bg-ocean-900 text-slate-300 border border-slate-700 text-xs transition">⚙️ 管理後台</button>
+                <button onclick="filterWorks('early', this)" class="filter-btn flex-shrink-0 px-3 py-1.5 rounded-lg bg-ocean-900 text-slate-300 border border-slate-700 text-xs transition">🧪 封測/原型</button>
+            </div>
+        </div>
+
+        <!-- 作品卡片列表 (手機 1 欄，平板 2 欄，桌機 3 欄) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="worksContainer">
+
+            <!-- 卡片 1: 1105 乙版 (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-cyan-500/30" data-category="flagship client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購自動化管理中樞.png" alt="1105乙 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-500 text-slate-950">
+                            👑 最終旗艦 RC・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-cyan-300">
+                            1105乙 / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">崁仔頂小商人．現流搶購旗艦前台</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-cyan-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                專為深夜海鮮限時現流搶購量身打造的極速前台。實裝 12:00 準時開賣機制與每日限量防超賣邏輯。購物車整合滿額免運階梯計算與進度條提示，並加入防重複下單鎖定與雙超商低溫門市備選，提供顧客流暢且安心的下單體驗。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">Fetch API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">Google Apps Script WebApp API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">HTML5 Web Storage API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">CSS Pulse Animation API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                基隆崁仔頂深夜漁船靠港現流搶購、每日限量土魠魚與大白鯧急速秒殺、社群團購高併發下單。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105乙/index.html', '1105乙 買家前台旗艦版')" class="flex-1 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-cyan-500/20">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105乙/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-cyan-500/30 text-cyan-300 text-xs font-semibold hover:bg-cyan-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 2: 1105 乙版 (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-amber-500/30" data-category="flagship admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1105乙 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500 text-slate-950">
+                            👑 最終旗艦 RC・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1105乙 / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">小商人旗艦後台系統 (訂單與出貨管理)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                崁仔頂小商人店長專屬的營運控制中樞。整合本週真實雲端訂單同步核銷、同一買家多張訂單自動歸戶併單出貨，並可一鍵直接列印出貨單。具備現流與冷凍商品圖文庫存上下架、VIP客戶數據分析與LINE私訊對話備份。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Apps Script WebApp API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Window.print() 列印 API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Blob/CSV Export API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                團購店長每日收款對帳、當週買家多單彙整出貨包裝、生鮮庫存圖檔即時修改與會員消費統計。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105乙/main.html', '1105乙 管理者控制台旗艦版')" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-amber-500/20">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105乙/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 3: 1105 甲版 (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/Night-Market Seafood Automation Helper.png" alt="1105甲 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-500 text-slate-950">
+                            功能完整版・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-sky-300">
+                            1105甲 / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">基隆鮮物前台完整版 (甲版)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-sky-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                完整呈現黃金 2/3 (現流搶購與影音) 與 1/3 (常態冷凍嚴選) 版面的前端經典版。支援雙軌購物車混搭選購、動態免運金額差額計算，以及公開留言板與手機後四碼私人私訊追蹤，是系統功能最完備的標準版本。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-sky-950 text-sky-300 rounded text-[11px] border border-sky-800">YouTube Iframe API</span>
+                                <span class="px-2 py-0.5 bg-sky-950 text-sky-300 rounded text-[11px] border border-sky-800">Fetch API</span>
+                                <span class="px-2 py-0.5 bg-sky-950 text-sky-300 rounded text-[11px] border border-sky-800">Google Apps Script WebApp API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                白天常態冷凍海鮮批發選購、深夜現流拍賣混搭下單、買家即時料理烹飪心得社群交流。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105甲/index.html', '1105甲版 買家前台')" class="flex-1 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105甲/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-sky-500/30 text-sky-300 text-xs font-semibold hover:bg-sky-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 4: 1105 甲版 (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1105甲 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-600 text-white">
+                            六大模組旗艦・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1105甲 / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">後台控制台旗艦模組 (甲版)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                具備全方位功能模組的總控制台旗艦版本。提供訂單檢驗、六天現流商品排程切換、商品規格與圖片即時上架更新、財務損益毛利自動推算、防重複出貨註記與買家對話歷史 JSON 匯出備份，具備極高營運彈性。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Apps Script API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">FileReader & JSON API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                漁獲盤商每日營業額毛利推算、批發大宗客戶管理、商品快速上下架與對話歷史封存。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105甲/main.html', '1105甲版 後台控制台')" class="flex-1 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105甲/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 5: 1105c (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/小商人海鮮新人須知攻略.png" alt="1105c 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-600 text-white">
+                            精簡影音版・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-cyan-300">
+                            1105c / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">崁仔頂前台 C 版 (精簡影音版)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-cyan-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                針對行動端加載速度與瀏覽體驗進行輕量化重構之版本。聚焦於崁仔頂漁市文化紀實與現流挑選影音教學，並搭配直覺式快速下單結帳彈窗，讓首度造訪的消費者能透過影音直觀認識漁獲品質後極速下單。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">YouTube Player API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">Fetch API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">HTML5 Web Storage API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                社群短影音與開箱教學導購、新客快速認識崁仔頂文化與新手首購快速結帳體驗。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105c/index.html', '1105c 買家前台')" class="flex-1 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105c/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-cyan-500/30 text-cyan-300 text-xs font-semibold hover:bg-cyan-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 6: 1105c (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購自動化管理中樞.png" alt="1105c 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-600 text-white">
+                            輕量管理・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1105c / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">後台控制台 C 版 (輕量對帳)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                專門提供小商人團隊快速進行影音設定、簡化對帳審核的輕量管理系統。大幅降低操作層級與視覺負擔，讓行動裝置上的管理者能隨時於手機上修改首頁影音連結，並於 3 秒內完成匯款核銷切換。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Apps Script WebApp API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                店長外出時使用智慧型手機巡查訂單、快速更換首頁 YouTube 直播/教學影片、輕便對帳。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105c/main.html', '1105c 後台管理')" class="flex-1 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105c/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 7: 1105b (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/Night-Market Seafood Automation Helper.png" alt="1105b 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white">
+                            GAS 串接版・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-purple-300">
+                            1105b / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">前台 B 版 (試算表 API 拋轉)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-purple-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                驗證 Google Apps Script 雙向 API 穩定度之里程碑版本。解決了跨來源資源共享 (CORS) 與靜態單頁應用無伺服器寫入試算表的技術難點，讓買家於前端送出訂單後，可 100% 不掉單同步至雲端表格。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">Fetch API (no-cors)</span>
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">Google Apps Script WebApp API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                驗證無後端伺服器 (Serverless) 之高可用訂單拋轉機制，確保高流量時資料庫寫入零遺失。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105b/index.html', '1105b 買家前台')" class="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105b/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-purple-500/30 text-purple-300 text-xs font-semibold hover:bg-purple-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 8: 1105b (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1105b 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-600 text-white">
+                            雲端連動・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1105b / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">後台控制台 B 版 (雲端自動化)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                配合 1105b 前端建立的輕便管理面板，主要用於驗證 Google Apps Script 雲端訂單讀取效能與自動化發信通知買家之端對端流程，是系統後端架構自動化演進的核心技術斷點原型。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Apps Script MailApp API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                測試 Google 雲端試算表自動化發送訂單對帳通知信與匯款帳號通知機制。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105b/main.html', '1105b 後台管理')" class="flex-1 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105b/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 9: 1105a (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/小商人海鮮新人入群指南(1).png" alt="1105a 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-700 text-white">
+                            黃金比例規範・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-cyan-300">
+                            1105a / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">前台 A 版 (規範化版面)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-cyan-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                確立系統 2/3 (左欄現流與影音) 對 1/3 (右欄垂直直落冷凍商品) 嚴格網格比例的設計里程碑。解決早期影音區過大造成右側空間斷層的問題，奠定了全站現代響應式 (RWD) 視覺排版基調。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">CSS Grid & Flexbox API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">Fetch API</span>
+                                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 rounded text-[11px] border border-cyan-800">YouTube Iframe API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                跨桌機、平板與手機的多螢幕視覺一致性測試，確保冷凍商品永遠處於視線直覺焦點。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105a/index.html', '1105a 買家前台')" class="flex-1 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105a/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-cyan-500/30 text-cyan-300 text-xs font-semibold hover:bg-cyan-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 10: 1105a (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1105a 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-600 text-white">
+                            結構標準化・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1105a / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/05
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">後台控制台 A 版 (結構標準化)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                規範化管理後台版面配置，包含現流漁獲預購排程、冷凍嚴選商品卡片編輯與四分頁管理。協助團隊釐清訂單生命週期（下單未付款、已核銷、已出貨），為後續防重複出貨機制奠定邏輯。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">HTML5 LocalStorage API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                團隊內部討論後台功能排版動線、驗證商品分類與庫存編輯的輸入介面防呆。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1105a/main.html', '1105a 後台管理')" class="flex-1 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1105a/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 11: 1104 (前台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-emerald-500/30" data-category="client">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購自動化管理中樞.png" alt="1104 買家前台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500 text-slate-950">
+                            營運大整合・前台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-emerald-300">
+                            1104 / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/04
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">1104 營運與對帳流程大整合 (前台)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-emerald-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                全面改用「湛藍海洋沉浸式美學 (Slate & Cyan)」的重大版本。實裝內聯樣式支援 VS Code 本機離線渲染；前台現流庫存數字放大 3 倍並觸發劇烈跳動；後台出貨單首度加入 isPrinted 防重複出貨機制與 SEO 檢測。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded text-[11px] border border-emerald-800">CSS Inline Styles API</span>
+                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded text-[11px] border border-emerald-800">Fetch API</span>
+                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded text-[11px] border border-emerald-800">Web Storage API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                實體漁市深夜現流叫賣氛圍營造、團購店長週六批次出貨防重複打單、離線環境展示。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1104/index.html', '1104 核心前台')" class="flex-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1104/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 12: 1104 (後台) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-emerald-500/30" data-category="admin">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1104 管理後台" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500 text-slate-950">
+                            出貨防重・後台
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-amber-300">
+                            1104 / main.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/04
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">1104 出貨防重複管理後台</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                包含六大管理模組，首創出貨單防重複列印鎖定機制。結合 AI 智慧銷售文案一鍵生成工具，能自動抓取當日現流漁獲特色產出社群團購宣傳文案，並提供網頁 SEO 體檢報告與評分（達 98 分）。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Window.print() API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">Google Sheets API</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[11px] border border-amber-800">AI Prompt Generator API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                社群小編深夜發布新鮮漁獲文案、倉儲理貨人員印製不重複出貨單據、網站 SEO 體檢。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1104/main.html', '1104 後台控制台')" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1104/main.html" target="_blank" class="px-3 py-2 rounded-xl border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 13: 1103cb (closed_beta.html) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-purple-500/30" data-category="early">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/小商人海鮮新人須知攻略.png" alt="1103cb 封測頁" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-500 text-white">
+                            封閉測試・邀請專用
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-purple-300">
+                            1103cb / closed_beta.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/03
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">Closed Beta 封閉測試邀請頁</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-purple-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                專為首波 VIP 顧客與社群核心成員打造的封測體驗入口。徹底剝離管理者工具與測試列，呈現 100% 純淨的消費者搶購介面。後端加入 Google Apps Script 併發控制鎖，確保多位買家同時下單不覆蓋。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">GAS LockService API (30s Lock)</span>
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">Fetch API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                LINE VIP 群組首發封測試賣、高併發搶購壓測、收集早期海鮮老饕顧客下單反饋。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1103cb/closed_beta.html', 'Closed Beta 封測頁')" class="flex-1 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1103cb/closed_beta.html" target="_blank" class="px-3 py-2 rounded-xl border border-purple-500/30 text-purple-300 text-xs font-semibold hover:bg-purple-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 14: 1103cb (index.html) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="early">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/小商人海鮮新人入群指南(1).png" alt="1103cb 首頁" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-600 text-white">
+                            封測首頁・上線版
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-purple-300">
+                            1103cb / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/03
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">封測主版面 (GitHub Pages 上線)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-purple-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                封測階段之主版面，實裝滿 $3,000 免運、滿 $2,000 運費 $60 之階梯運費規則。包含數量下拉選單與 stockBump 動畫反饋，並首次將專案成功部署至 GitHub Pages 實現雲端跨裝置預覽測試。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">GitHub Pages Hosting</span>
+                                <span class="px-2 py-0.5 bg-purple-950 text-purple-300 rounded text-[11px] border border-purple-800">Google Sheets WebApp API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                外部測試人員透過手機瀏覽器點擊連結測試、運費門檻計算邏輯線上驗證。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1103cb/index.html', '1103cb 首頁版')" class="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1103cb/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-purple-500/30 text-purple-300 text-xs font-semibold hover:bg-purple-500/10 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 15: 1102 (index.html) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="early">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/Night-Market Seafood Automation Helper.png" alt="1102 首頁原型" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-600 text-white">
+                            初代探勘・原型首頁
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-slate-300">
+                            1102 / index.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/02
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">初代架構探勘原型 (1102 首頁)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                專案初期的概念首頁驗證版本。測試 12:00 開賣定時器、現流漁獲卡片佈局與商品快速加入購物車之互動流暢度，是整個崁仔頂海鮮電商系統從 Prompt 走向具體互動介面的起點。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">JavaScript Timer API</span>
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">HTML5 LocalStorage API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                驗證 12:00 定時器邏輯、測試純 JavaScript 購物車狀態計算、展示初期視覺概念。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1102/index.html', '1102 原型首頁')" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1102/index.html" target="_blank" class="px-3 py-2 rounded-xl border border-slate-600 text-slate-300 text-xs font-semibold hover:bg-slate-700/50 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 16: 1102A (1102A.html) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="early">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購自動化管理中樞.png" alt="1102A 概念版型" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-700 text-white">
+                            概念排版・方案 A
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-slate-300">
+                            1102 / 1102A.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/02
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">初代概念排版方案 A (1102A)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                概念探索期的版型方案 A。採用單欄流動式商品卡片展示，測試不同解析度下現流商品的大圖排版效果與規格說明展示層次，為後續三欄式黃金比例提供寶貴的排版對照數據。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">CSS Flexbox API</span>
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">DOM Event Listener API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                前期 UI/UX 方案比對、商品圖片展示尺寸適配測試、使用者閱讀舒適度評估。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1102/1102A.html', '1102A 概念原型 A')" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1102/1102A.html" target="_blank" class="px-3 py-2 rounded-xl border border-slate-600 text-slate-300 text-xs font-semibold hover:bg-slate-700/50 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 17: 1102b (1102b.html) -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between work-card border-slate-700/80" data-category="early">
+                <div>
+                    <!-- 小圖卡頂部圖片 -->
+                    <div class="w-full h-36 bg-ocean-900 relative overflow-hidden">
+                        <img src="圖片/海鮮團購與專案管理中樞.png" alt="1102b 概念版型" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-ocean-950/90 via-ocean-950/30 to-transparent"></div>
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-700 text-white">
+                            概念排版・方案 B
+                        </span>
+                        <span class="absolute bottom-2 left-2.5 text-[11px] font-bold text-slate-300">
+                            1102 / 1102b.html
+                        </span>
+                        <span class="absolute bottom-2 right-2.5 text-[10px] text-slate-400">
+                            2026/11/02
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <h3 class="text-base font-bold text-white">初代概念排版方案 B (1102B)</h3>
+
+                        <!-- 100字簡介 -->
+                        <div class="bg-ocean-900/60 p-2.5 rounded-xl border border-slate-800">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">📝 100字簡介</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                概念探索期的版型方案 B。嘗試將雙軌購物車與快速結帳表單置於同一可視區域，驗證單頁即時結帳與匯款資料填寫的流程流暢度，確立了後續彈窗結帳 Modal 的架構原型。
+                            </p>
+                        </div>
+
+                        <!-- 使用 API -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🔌 使用到的 API：</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">HTML5 Form Validation API</span>
+                                <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[11px] border border-slate-700">DOM Manipulation API</span>
+                            </div>
+                        </div>
+
+                        <!-- 應用場景 -->
+                        <div class="text-xs">
+                            <span class="text-[11px] font-bold text-slate-400 block mb-1">🎯 應用場景：</span>
+                            <p class="text-xs text-slate-300 bg-ocean-900/40 p-2 rounded-lg border border-slate-800/80">
+                                表單送出互動體驗測試、免跳頁即時購物車展開、結帳流程阻力最小化實驗。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打開的按鈕 -->
+                <div class="p-4 pt-0">
+                    <div class="pt-3 border-t border-slate-800/80 flex gap-2">
+                        <button onclick="openPreviewModal('網站歷程版本_old/01_開發版本歷程/1102/1102b.html', '1102b 概念原型 B')" class="flex-1 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs flex items-center justify-center gap-1">
+                            <span>⚡ 打開作品</span>
+                        </button>
+                        <a href="網站歷程版本_old/01_開發版本歷程/1102/1102b.html" target="_blank" class="px-3 py-2 rounded-xl border border-slate-600 text-slate-300 text-xs font-semibold hover:bg-slate-700/50 flex items-center justify-center">
+                            新分頁 ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 4. 專案版本演進時間軸 (Timeline Section) -->
+    <section id="timeline" class="max-w-7xl mx-auto px-4 py-8 scroll-mt-16">
+        <div class="glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-8 border-cyan-500/30">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
+                <div>
+                    <span class="text-cyan-400 text-xs font-bold uppercase tracking-widest">Evolution Milestones</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mt-0.5 flex items-center gap-2">
+                        <span>📅</span> 日期更新與版本迭代里程碑
+                    </h2>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-0.5">從需求定義 (10/30) 到全模組發行 (11/05) 與作品集發布 (11/09)</p>
+                </div>
+                <span class="text-xs text-cyan-300 bg-cyan-950/80 px-2.5 py-1 rounded-full border border-cyan-500/30 font-medium self-start sm:self-auto">
+                    累計 9 大版本里程碑
+                </span>
+            </div>
+
+            <div class="relative pl-6 sm:pl-8 border-l-2 border-cyan-500/30 space-y-6">
+                <!-- 11/09 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-ocean-950 shadow-md shadow-cyan-400/50"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-black text-cyan-400 bg-cyan-950 px-2.5 py-0.5 rounded-full border border-cyan-500/40">V2.0</span>
+                        <span class="text-xs font-bold text-white">2026 / 11 / 09</span>
+                        <span class="text-[10px] text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">手機優先作品集</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">「我的網頁作品集」總覽入口與手機優先重構</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        加入手機底部導航列、作品目錄全版本小圖卡（含 100 字簡介、API 清單、應用場景、打開按鈕）與關於我個人簡介。
+                    </p>
+                </div>
+
+                <!-- 11/07 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-slate-500 border-4 border-ocean-950"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-bold text-slate-300 bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700">V1.7</span>
+                        <span class="text-xs font-bold text-slate-400">2026 / 11 / 07</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">完整建置規格書整合定稿 (KHAMTING-MASTER-SPEC)</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        制定規則治理標記；確立雙超商門市備用、單張對帳、當週併單出貨階梯與單一檔案 SPA 架構標準。
+                    </p>
+                </div>
+
+                <!-- 11/05 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-brand-coral border-4 border-ocean-950 shadow-md shadow-red-500/50"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-black text-brand-coral bg-red-950 px-2.5 py-0.5 rounded-full border border-red-500/40">V1.5 RC</span>
+                        <span class="text-xs font-bold text-white">2026 / 11 / 05</span>
+                        <span class="text-[10px] text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">旗艦發行</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">1105 總更新與防呆修復（1105甲 / 1105乙發布）</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        現流庫存 300% 脈衝動畫、防重複送單 disabled 鎖定、雙超商冷鏈強制回報、六大管理控制台全模組貫通。
+                    </p>
+                </div>
+
+                <!-- 11/04 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-emerald-400 border-4 border-ocean-950"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-500/40">V1.0</span>
+                        <span class="text-xs font-bold text-slate-300">2026 / 11 / 04</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">1104 核心營運整合與深藍美學</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        湛藍沉浸美學、內聯樣式確保 VS Code 本機離線渲染、isPrinted 防重複出貨機制、AI 銷售文案推薦。
+                    </p>
+                </div>
+
+                <!-- 11/03 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-purple-400 border-4 border-ocean-950"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-bold text-purple-400 bg-purple-950 px-2.5 py-0.5 rounded-full border border-purple-500/40">V0.5</span>
+                        <span class="text-xs font-bold text-slate-400">2026 / 11 / 03</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">Closed Beta 封測分離與 GAS 併發鎖定</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        架構分離為買家純淨下單頁 (closed_beta.html) 與後台 (main.html)；GAS LockService 30 秒併發鎖防超搶漏單。
+                    </p>
+                </div>
+
+                <!-- 10/30 -->
+                <div class="relative">
+                    <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full bg-slate-600 border-4 border-ocean-950"></div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs font-bold text-slate-400 bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700">V0.1</span>
+                        <span class="text-xs font-bold text-slate-400">2026 / 10 / 30</span>
+                    </div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">專案啟動：01vib 架站 Prompt Specification 定義</h4>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        確立「基隆鮮物．崁仔頂小商人」品牌色彩、單一檔案 SPA 規格與 AI 提示詞工程基石。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 bg-ocean-950 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="text-slate-400 font-semibold mb-1">我的網頁作品集 • Vibe Coding 精選成果</p>
+            <p>嚴格保留各版本原始程式碼檔案 • 零修改作品程式內容</p>
+        </div>
+    </footer>
+
+    <!-- 📱 手機優先：底部固定浮動導覽列 (Mobile Sticky Bottom Nav) -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-ocean-950/95 backdrop-blur-lg border-t border-cyan-500/20 md:hidden safe-bottom">
+        <div class="flex items-center justify-around h-14 px-2 text-[10px]">
+            <a href="#hero" class="flex flex-col items-center justify-center w-14 text-slate-400 hover:text-cyan-400 transition">
+                <span class="text-base">🏠</span>
+                <span class="mt-0.5">首頁</span>
+            </a>
+            <a href="#about" class="flex flex-col items-center justify-center w-14 text-slate-400 hover:text-cyan-400 transition">
+                <span class="text-base">👤</span>
+                <span class="mt-0.5">關於我</span>
+            </a>
+            <a href="#catalog" class="flex flex-col items-center justify-center w-16 text-cyan-400 font-bold">
+                <div class="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-base">
+                    📂
+                </div>
+                <span class="mt-0.5">作品目錄</span>
+            </a>
+            <a href="#timeline" class="flex flex-col items-center justify-center w-14 text-slate-400 hover:text-cyan-400 transition">
+                <span class="text-base">📅</span>
+                <span class="mt-0.5">時間軸</span>
+            </a>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center justify-center w-14 text-slate-400 hover:text-cyan-400 transition">
+                <span class="text-base">🔝</span>
+                <span class="mt-0.5">置頂</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ⚡ 互動預覽 Modal (Live Preview Modal) -->
+    <div id="previewModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col items-center justify-center p-2 sm:p-4">
+        <div class="w-full max-w-6xl h-[94vh] bg-ocean-900 rounded-2xl border border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <!-- 彈窗頂部列 -->
+            <div class="h-12 bg-ocean-950 border-b border-cyan-500/20 px-3 sm:px-4 flex items-center justify-between select-none">
+                <div class="flex items-center space-x-2 truncate">
+                    <button onclick="closePreviewModal()" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:opacity-80 transition" title="關閉"></button>
+                    <span class="w-3.5 h-3.5 rounded-full bg-yellow-500 hidden sm:inline-block"></span>
+                    <span class="w-3.5 h-3.5 rounded-full bg-green-500 hidden sm:inline-block"></span>
+                    <span id="modalTitle" class="ml-2 text-xs sm:text-sm font-bold text-cyan-300 truncate max-w-[180px] sm:max-w-md">網頁即時預覽</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a id="modalExternalLink" href="#" target="_blank" class="text-[11px] sm:text-xs bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 px-2.5 py-1 rounded-md transition flex items-center gap-1">
+                        <span>新視窗開啟 ↗</span>
+                    </a>
+                    <button onclick="closePreviewModal()" class="text-slate-400 hover:text-white text-base font-bold px-2 py-0.5 rounded transition">
+                        ✕
+                    </button>
+                </div>
+            </div>
+            <!-- iframe 內容 -->
+            <div class="flex-1 w-full bg-slate-900 relative">
+                <iframe id="previewIframe" src="" class="w-full h-full border-0" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 互動邏輯 JavaScript -->
+    <script>
+        // 即時預覽 Modal 控制
+        function openPreviewModal(url, title) {
+            const modal = document.getElementById('previewModal');
+            const iframe = document.getElementById('previewIframe');
+            const titleEl = document.getElementById('modalTitle');
+            const externalLink = document.getElementById('modalExternalLink');
+
+            titleEl.textContent = title || '即時網頁預覽';
+            iframe.src = url;
+            externalLink.href = url;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            const iframe = document.getElementById('previewIframe');
+            modal.classList.add('hidden');
+            iframe.src = '';
+            document.body.style.overflow = '';
+        }
+
+        // ESC 鍵關閉彈窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePreviewModal();
+            }
+        });
+
+        // 作品目錄分類篩選
+        function filterWorks(category, btnEl) {
+            const cards = document.querySelectorAll('.work-card');
+            const buttons = document.querySelectorAll('#filterBar .filter-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-slate-950', 'font-bold');
+                btn.classList.add('bg-ocean-900', 'text-slate-300');
+            });
+            if (btnEl) {
+                btnEl.classList.remove('bg-ocean-900', 'text-slate-300');
+                btnEl.classList.add('bg-cyan-500', 'text-slate-950', 'font-bold');
+            }
+
+            cards.forEach(card => {
+                const cats = card.dataset.category || '';
+                if (category === 'all' || cats.includes(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
